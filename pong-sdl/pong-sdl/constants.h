@@ -1,0 +1,22 @@
+#ifndef __PONG_SDL_CONSTANTS__
+#define __PONG_SDL_CONSTANTS__
+
+#include <stdio.h>
+
+#define BLOCK_WIDTH          1
+#define DEFAULT_LENGTH       7 // Middle is three (3)
+
+#define TOP_PLAY_SCREEN      0
+#define BOTTOM_PLAY_SCREEN   20
+
+#define LEFT_PLAY_SCREEN     0
+#define RIGHT_PLAY_SCREEN    40
+
+#define TOTAL_PIXELS         (BOTTOM_PLAY_SCREEN - TOP_PLAY_SCREEN) * (RIGHT_PLAY_SCREEN - LEFT_PLAY_SCREEN)
+
+#define LEFT_PLAYER_START_X  LEFT_PLAY_SCREEN + 5
+#define RIGHT_PLAYER_START_X RIGHT_PLAY_SCREEN - 5
+
+#define PLAYER_START_TOP_Y   (BOTTOM_PLAY_SCREEN - TOP_PLAY_SCREEN - DEFAULT_LENGTH) / 2
+
+#endif
