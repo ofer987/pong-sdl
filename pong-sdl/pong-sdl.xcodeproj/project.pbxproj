@@ -6,7 +6,27 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EA8B832E2DD8CFCE00367E11 /* SDL3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8B832D2DD8CFCE00367E11 /* SDL3.framework */; };
+		EA8B832F2DD8CFCE00367E11 /* SDL3.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA8B832D2DD8CFCE00367E11 /* SDL3.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EA8B83302DD8CFCE00367E11 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				EA8B832F2DD8CFCE00367E11 /* SDL3.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		EA8B832D2DD8CFCE00367E11 /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL3.framework; path = ../../../../../Library/Frameworks/SDL3.framework; sourceTree = "<group>"; };
 		EAE87F3D2DD8CCD90059F8B2 /* pong-sdl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "pong-sdl.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -23,16 +43,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA8B832E2DD8CFCE00367E11 /* SDL3.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EA8B832C2DD8CFCE00367E11 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EA8B832D2DD8CFCE00367E11 /* SDL3.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		EAE87F342DD8CCD90059F8B2 = {
 			isa = PBXGroup;
 			children = (
 				EAE87F3F2DD8CCD90059F8B2 /* pong-sdl */,
+				EA8B832C2DD8CFCE00367E11 /* Frameworks */,
 				EAE87F3E2DD8CCD90059F8B2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -55,6 +85,7 @@
 				EAE87F392DD8CCD90059F8B2 /* Sources */,
 				EAE87F3A2DD8CCD90059F8B2 /* Frameworks */,
 				EAE87F3B2DD8CCD90059F8B2 /* Resources */,
+				EA8B83302DD8CFCE00367E11 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -250,6 +281,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5C2RRQX4HS;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
@@ -276,6 +311,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5C2RRQX4HS;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
