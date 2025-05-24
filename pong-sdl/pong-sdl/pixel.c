@@ -4,6 +4,7 @@
 #include "./pixel.h"
 
 struct _pixel {
+  // TODO: change to uint32_t
   size_t x;
   size_t y;
 

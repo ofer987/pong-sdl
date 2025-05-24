@@ -2,34 +2,26 @@
 #include <stdlib.h>
 
 #include "./ball.h"
+#include "./border.h"
 #include "./constants.h"
 #include "./pixel.h"
 #include "./player.h"
 #include "./screen.h"
 
-struct _block {
-  Pixel* pixel;
-  Block* next;
-};
-
 struct _screen {
+  Border* topBorder;
+  Border* bottomBorder;
+
   Player* leftPlayer;
   Player* rightPlayer;
   Ball* ball;
   enum EGameMode mode;
-
-  Block* blocks;
 };
-
-Block*
-firstBlock(Screen* screen) {
-  return screen->blocks->next;
-}
 
 void
 initPlayers(Screen* screen) {
-  screen->leftPlayer = initPlayer(LEFT_SIDE);
-  screen->rightPlayer = initPlayer(RIGHT_SIDE);
+  screen->leftPlayer = initPlayer(LEFT_SIDE, PLAYER_WIDTH, PLAYER_HEIGHT);
+  screen->rightPlayer = initPlayer(RIGHT_SIDE, PLAYER_WIDTH, PLAYER_HEIGHT);
 }
 
 Player*
@@ -43,25 +35,38 @@ getRightPlayer(Screen* screen) {
 }
 
 Screen*
-initScreen(void) {
+initScreen(size_t topBorderY, size_t bottomBorderY) {
   Screen* result = malloc(sizeof(Screen));
 
   initPlayers(result);
   result->ball = initBall();
   result->mode = GameNotStated;
+
+  result->topBorder = initBorder(topBorderY, TOP_BORDER);
+  result->bottomBorder = initBorder(bottomBorderY, BOTTOM_BORDER);
   return result;
 }
 
 void
 startGame(Screen* screen) {
   switch (screen->mode) {
+    case GameInProgress:
+      screen->mode = GamePaused;
+
+      return;
+    case GamePaused:
+      screen->mode = GameInProgress;
+
+      return;
     case GameRestart:
+      /* Fallthrough */
     case GameNotStated:
       screen->mode = GameInProgress;
       kickBall(screen->ball);
 
       return;
-    default: return;
+    default:
+      return;
   }
 }
 
@@ -75,11 +80,11 @@ restartGame(Screen* screen) {
   screen->ball = initBall();
   free(screen->leftPlayer);
   screen->leftPlayer = NULL;
-  screen->leftPlayer = initPlayer(LEFT_SIDE);
+  screen->leftPlayer = initPlayer(LEFT_SIDE, PLAYER_WIDTH, PLAYER_HEIGHT);
 
   free(screen->rightPlayer);
   screen->rightPlayer = NULL;
-  screen->rightPlayer = initPlayer(RIGHT_SIDE);
+  screen->rightPlayer = initPlayer(RIGHT_SIDE, PLAYER_WIDTH, PLAYER_HEIGHT);
 }
 
 void
@@ -96,7 +101,8 @@ setGameToLost(Screen* screen) {
       screen->mode = GameLost;
 
       return;
-    default: return;
+    default:
+      return;
   }
 }
 
@@ -107,7 +113,7 @@ isLost(Screen* screen) {
 
 void
 moveScreenBall(Screen* screen) {
-  moveBall(screen->ball, screen->leftPlayer, screen->rightPlayer);
+  moveBall(screen->ball, screen->leftPlayer, screen->rightPlayer, screen->topBorder, screen->bottomBorder);
 }
 
 Ball*
@@ -122,17 +128,6 @@ getGameMode(Screen* screen) {
 
 void
 destroyScreen(Screen* screen) {
-  Block* block = screen->blocks;
-  Block* nextBlock = NULL;
-
-  if (block != NULL) {
-    nextBlock = block->next;
-
-    free(block);
-    block = nextBlock;
-  }
-  screen->blocks = NULL;
-
   free(screen->leftPlayer);
   screen->leftPlayer = NULL;
 
@@ -141,4 +136,7 @@ destroyScreen(Screen* screen) {
 
   destoryBall(screen->ball);
   screen->ball = NULL;
+
+  destroyBorder(screen->topBorder);
+  destroyBorder(screen->bottomBorder);
 }

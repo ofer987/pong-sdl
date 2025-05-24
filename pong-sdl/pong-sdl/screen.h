@@ -7,7 +7,6 @@
 enum EGameMode { GameNotStated, GameInProgress, GamePaused, GameLost, GameQuit, GameRestart };
 typedef enum EGameMode EGameMode;
 
-typedef struct _block Block;
 typedef struct _screen Screen;
 
 bool isLost(Screen*);
@@ -16,8 +15,7 @@ Ball* getBall(Screen*);
 Player* getLeftPlayer(Screen*);
 Player* getRightPlayer(Screen*);
 
-Block* firstBlock(Screen*);
-Screen* initScreen(void);
+Screen* initScreen(size_t, size_t);
 void deleteScreen(Screen*);
 void startGame(Screen*);
 void setGameToLost(Screen*);

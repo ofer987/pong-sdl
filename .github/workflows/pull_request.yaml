@@ -15,4 +15,4 @@ jobs:
 
       - name: Clang-Format
         run: |
-          clang-format $(find ./snake -type f -iname '*.c') --dry-run -Werror --style=file:.clang-format-18
+          clang-format $(find ./pong-sdl/pong-sdl -type f -iname '*.c') --dry-run -Werror --style=file:.clang-format-18
