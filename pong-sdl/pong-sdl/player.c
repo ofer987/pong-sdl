@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -8,10 +9,18 @@
 
 struct _player {
   Pixel* top;
-  /* Pixel* bottom; */
-  size_t length;
+
+  enum EPlayerSide side;
+  int32_t height;
+  int32_t width;
+
   size_t score;
 };
+
+enum EPlayerSide
+getPlayerSide(Player* player) {
+  return player->side;
+}
 
 Pixel*
 getPlayerTopPixel(Player* player) {
@@ -19,20 +28,43 @@ getPlayerTopPixel(Player* player) {
 }
 
 size_t
-getPlayerLength(Player* player) {
-  return player->length;
+getPlayerLengthMidPointY(Player* player) {
+  size_t y = getPixelY(player->top);
+
+  // TODO: validate that 15 / 2 == 7
+  return y + (player->height / 2) - 1;
+}
+
+int32_t
+getPlayerWidth(Player* player) {
+  return player->width;
+}
+
+int32_t
+getPlayerHeight(Player* player) {
+  return player->height;
 }
 
 Player*
-initPlayer(enum EPlayerSide side) {
+initPlayer(enum EPlayerSide side, int32_t width, int32_t height) {
   Player* result = malloc(sizeof(Player));
   switch (side) {
-    case LEFT_SIDE: result->top = initPixel(LEFT_PLAYER_START_X, PLAYER_START_TOP_Y, PLAYER_BLOCK); break;
-    case RIGHT_SIDE: result->top = initPixel(RIGHT_PLAYER_START_X, PLAYER_START_TOP_Y, PLAYER_BLOCK); break;
-    default: fprintf(stderr, "unknown EPlayerSide %ud", side); exit(EXIT_FAILURE);
+    case LEFT_SIDE:
+      result->top = initPixel(LEFT_PLAYER_START_X, PLAYER_START_TOP_Y, PLAYER_BLOCK);
+
+      break;
+    case RIGHT_SIDE:
+      result->top = initPixel(RIGHT_PLAYER_START_X, PLAYER_START_TOP_Y, PLAYER_BLOCK);
+
+      break;
+    default:
+      fprintf(stderr, "unknown EPlayerSide %ud", side);
+      exit(EXIT_FAILURE);
   }
 
-  result->length = DEFAULT_LENGTH;
+  result->width = width;
+  result->height = height;
+  result->side = side;
   result->score = 0;
 
   return result;
@@ -52,7 +84,7 @@ movePlayerUp(Player* player) {
 bool
 movePlayerDown(Player* player) {
   size_t topY = getPixelY(player->top);
-  if ((topY + player->length) == (BOTTOM_PLAY_SCREEN - TOP_PLAY_SCREEN)) {
+  if ((topY + player->height) == (BOTTOM_PLAY_SCREEN - TOP_PLAY_SCREEN)) {
     return false;
   }
 

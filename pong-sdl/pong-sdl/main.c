@@ -20,6 +20,7 @@
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_keycode.h"
 #include "SDL3/SDL_mouse.h"
+#include "SDL3/SDL_oldnames.h"
 #include "SDL3/SDL_rect.h"
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_stdinc.h"
@@ -44,8 +45,12 @@
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
 
+static Uint32 TIME_DELAY = 5;
 static Uint32 TEN_MILLISECONDS = 10;
 static Uint64 ONE_HUNDRED_MILLISECONDS = 100;
+
+static const float pixelScale = 2.0f;
+static const float textScale = 2.0f;
 
 static uint64_t rerenderedMovementFrames = 0;
 
@@ -119,7 +124,7 @@ SDL_AppInit(void** appstate, int argc, char* argv[]) {
     return SDL_APP_FAILURE;
   }
 
-  screen = initScreen();
+  screen = initScreen(TOP_PLAY_SCREEN, BOTTOM_PLAY_SCREEN);
 
   // There are 1_000_000_000 nanoseconds in a second
   /* ns_per_frame = 1000000000 / fps; */
@@ -159,7 +164,10 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
         /* } */
 
         return SDL_APP_SUCCESS;
-      case SDLK_R: restartGame(screen); return SDL_APP_CONTINUE;
+      case SDLK_R:
+        restartGame(screen);
+
+        return SDL_APP_CONTINUE;
       case SDLK_P:
         startGame(screen);
         /* set_current_movement(game, NOTHING); */
@@ -188,11 +196,24 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
       Player* rightPlayer = getRightPlayer(screen);
 
       switch (key) {
-        case SDLK_A: movePlayerDown(leftPlayer); break;
-        case SDLK_S: movePlayerUp(leftPlayer); break;
-        case SDLK_J: movePlayerDown(rightPlayer); break;
-        case SDLK_K: movePlayerUp(rightPlayer); break;
-        default: break;
+        case SDLK_A:
+          movePlayerDown(leftPlayer);
+
+          break;
+        case SDLK_S:
+          movePlayerUp(leftPlayer);
+
+          break;
+        case SDLK_J:
+          movePlayerDown(rightPlayer);
+
+          break;
+        case SDLK_K:
+          movePlayerUp(rightPlayer);
+
+          break;
+        default:
+          break;
       }
 
       return SDL_APP_CONTINUE;
@@ -202,68 +223,68 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
   return SDL_APP_CONTINUE;
 }
 
-void
-render_record(size_t score) {
-  const float scale = 2.0f;
+/* void */
+/* render_record(size_t score) { */
+/*   const float scale = 2.0f; */
+/*  */
+/*   SDL_SetRenderScale(renderer, scale, scale); */
+/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
+/*   #<{(| SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT, "Record: %zu", score); |)}># */
+/* } */
 
-  SDL_SetRenderScale(renderer, scale, scale);
-  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  /* SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT, "Record: %zu", score); */
-}
-
-void
-render_text(size_t score) {
-  const float scale = 2.0f;
-
-  SDL_SetRenderScale(renderer, scale, scale);
-  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  /* SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 10, "Score:  %zu", score); */
-}
-
-void
-render_keys(void) {
-  const float scale = 2.0f;
-
-  SDL_SetRenderScale(renderer, scale, scale);
-  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  /* SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Press:  (Q)uit | (R)estart | (P)ause"); */
-}
-
-void
-render_lost_keys(void) {
-  const float scale = 2.0f;
-
-  SDL_SetRenderScale(renderer, scale, scale);
-  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  /* SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Press:  (Q)uit | (R)estart"); */
-}
-
-void
-render_pause(void) {
-  const float scale = 2.0f;
-
-  SDL_SetRenderScale(renderer, scale, scale);
-  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  /* SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "Game is Paused. Any key to continue"); */
-}
-
-void
-render_quit(void) {
-  const float scale = 2.0f;
-
-  SDL_SetRenderScale(renderer, scale, scale);
-  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  /* SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "Press Q again to Quit"); */
-}
-
-void
-render_lost(void) {
-  const float scale = 2.0f;
-
-  SDL_SetRenderScale(renderer, scale, scale);
-  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  /* SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "You have lost!"); */
-}
+/* void */
+/* render_text(size_t score) { */
+/*   const float scale = 2.0f; */
+/*  */
+/*   SDL_SetRenderScale(renderer, scale, scale); */
+/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
+/*   #<{(| SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 10, "Score:  %zu", score); |)}># */
+/* } */
+/*  */
+/* void */
+/* render_keys(void) { */
+/*   const float scale = 2.0f; */
+/*  */
+/*   SDL_SetRenderScale(renderer, scale, scale); */
+/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
+/*   #<{(| SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Press:  (Q)uit | (R)estart | (P)ause"); |)}># */
+/* } */
+/*  */
+/* void */
+/* render_lost_keys(void) { */
+/*   const float scale = 2.0f; */
+/*  */
+/*   SDL_SetRenderScale(renderer, scale, scale); */
+/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
+/*   #<{(| SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Press:  (Q)uit | (R)estart"); |)}># */
+/* } */
+/*  */
+/* void */
+/* render_pause(void) { */
+/*   const float scale = 2.0f; */
+/*  */
+/*   SDL_SetRenderScale(renderer, scale, scale); */
+/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
+/*   #<{(| SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "Game is Paused. Any key to continue"); |)}># */
+/* } */
+/*  */
+/* void */
+/* render_quit(void) { */
+/*   const float scale = 2.0f; */
+/*  */
+/*   SDL_SetRenderScale(renderer, scale, scale); */
+/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
+/*   #<{(| SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "Press Q again to Quit"); |)}># */
+/* } */
+/*  */
+/* void */
+/* render_lost(void) { */
+/*   const float scale = 2.0f; */
+/*  */
+/*   SDL_SetRenderScale(renderer, scale, scale); */
+/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
+/*   #<{(| SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "You have lost!"); |)}># */
+/* } */
 
 /* void */
 /* renderPlayer(Player* player) {} */
@@ -277,6 +298,41 @@ render_lost(void) {
 
 /* void */
 void
+drawCircle(SDL_Renderer* renderer, int32_t centreX, int32_t centreY, int32_t radius) {
+  const int32_t diameter = (radius * 2);
+
+  int32_t x = (radius - 1);
+  int32_t y = 0;
+  int32_t tx = 1;
+  int32_t ty = 1;
+  int32_t error = (tx - diameter);
+
+  while (x >= y) {
+    //  Each of the following renders an octant of the circle
+    SDL_RenderPoint(renderer, centreX + x, centreY - y);
+    SDL_RenderPoint(renderer, centreX + x, centreY + y);
+    SDL_RenderPoint(renderer, centreX - x, centreY - y);
+    SDL_RenderPoint(renderer, centreX - x, centreY + y);
+    SDL_RenderPoint(renderer, centreX + y, centreY - x);
+    SDL_RenderPoint(renderer, centreX + y, centreY + x);
+    SDL_RenderPoint(renderer, centreX - y, centreY - x);
+    SDL_RenderPoint(renderer, centreX - y, centreY + x);
+
+    if (error <= 0) {
+      ++y;
+      error += ty;
+      ty += 2;
+    }
+
+    if (error > 0) {
+      --x;
+      tx += 2;
+      error += (tx - diameter);
+    }
+  }
+}
+
+void
 render(Screen* screen) {
   // Reset
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -287,26 +343,48 @@ render(Screen* screen) {
   SDL_FRect myFrects[TOTAL_PIXELS];
   /* SDL_FRect* snake_head_rect = NULL; */
 
+  SDL_FRect screenRect = {.x = 0.0f,
+                          .y = 0.0f,
+                          .w = (float)(RIGHT_PLAY_SCREEN - LEFT_PLAY_SCREEN),
+                          .h = (float)(BOTTOM_PLAY_SCREEN - TOP_PLAY_SCREEN)};
+  red = 0;
+  green = 0;
+  blue = 0;
+
+  SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
+  SDL_RenderFillRect(renderer, &screenRect);
+
   /* Coordinates* screen_coordinates = screen[index]; */
   // TODO: adjust for 0-based later
-  size_t index = 0;
-  for (size_t row = TOP_PLAY_SCREEN; row < BOTTOM_PLAY_SCREEN; row += 1) {
-    for (size_t column = LEFT_PLAY_SCREEN; column < RIGHT_PLAY_SCREEN; column += 1) {
-      myFrects[index].x = column;
-      myFrects[index].y = row;
-      myFrects[index].w = 1;
-      myFrects[index].h = 1;
+  /* size_t index = 0; */
+  /* for (size_t row = TOP_PLAY_SCREEN; row < BOTTOM_PLAY_SCREEN; row += 1) { */
+  /*   for (size_t column = LEFT_PLAY_SCREEN; column < RIGHT_PLAY_SCREEN; column += 1) { */
+  /*     myFrects[index].x = column; */
+  /*     myFrects[index].y = row; */
+  /*     myFrects[index].w = 1; */
+  /*     myFrects[index].h = 1; */
+  /*  */
+  /*     red = 127; */
+  /*     green = 127; */
+  /*     blue = 127; */
+  /*  */
+  /*     SDL_SetRenderDrawColor(renderer, red, green, blue, 255); */
+  /*     SDL_RenderFillRect(renderer, &myFrects[index]); */
+  /*  */
+  /*     index += 1; */
+  /*   } */
+  /* } */
 
-      red = 127;
-      green = 127;
-      blue = 127;
+  /* red = 100; */
+  /* green = 200; */
+  /* blue = 50; */
 
-      SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
-      SDL_RenderFillRect(renderer, &myFrects[index]);
+  /* SDL_RenderPoint(renderer, 3, 5); */
+  /* SDL_SetRenderDrawColor(renderer, red, green, blue, 255); */
+  /* drawCircle(renderer, 250, 250, 10); */
 
-      index += 1;
-    }
-  }
+  /* SDL_FPoint points[1] = {{.x = 2, .y = 0}}; */
+  /* SDL_RenderPoints(renderer, points, 500); */
 }
 
 void
@@ -314,7 +392,7 @@ renderBall(Ball* ball) {
   Uint64 red = 0, blue = 255, green = 0;
 
   Pixel* ballPixel = getBallPixel(ball);
-  SDL_FRect ballRect = {.x = getPixelX(ballPixel), .y = getPixelY(ballPixel), .w = 1, .h = 1};
+  SDL_FRect ballRect = {.x = getPixelX(ballPixel), .y = getPixelY(ballPixel), .w = BALL_WIDTH, .h = BALL_HEIGHT};
 
   SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
   SDL_RenderFillRect(renderer, &ballRect);
@@ -326,32 +404,25 @@ renderPlayer(Player* player) {
   size_t x = getPixelX(pixel);
   size_t y = getPixelY(pixel);
 
-  size_t length = getPlayerLength(player);
-  SDL_FRect myFrects[length];
-
-  /* const float scale = 32.0f; */
-  /* SDL_SetRenderScale(renderer, scale, scale); */
+  /* size_t length = getPlayerLength(player); */
+  SDL_FRect playerFrect;
 
   static Uint64 red = 255, blue = 0, green = 0;
-  for (size_t index = 0; index < length; index += 1) {
-    SDL_FRect frect = myFrects[index];
+  /* for (size_t index = 0; index < length; index += 1) { */
+  /* SDL_FRect frect = myFrects[index]; */
 
-    frect.x = x;
-    frect.y = y + index;
-    frect.w = 1;
-    frect.h = 1;
+  playerFrect.x = x;
+  playerFrect.y = y;
+  playerFrect.w = PLAYER_WIDTH;
+  playerFrect.h = PLAYER_HEIGHT;
 
-    /* const float scale = 1.0f; */
-    /* SDL_SetRenderScale(renderer, scale, scale); */
-    SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
-    SDL_RenderFillRect(renderer, &frect);
-  }
-  /* SDL_RenderPresent(renderer); */
+  SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
+  SDL_RenderFillRect(renderer, &playerFrect);
 }
 
 void
 renderGameMode(EGameMode mode) {
-  const float scale = 4.0f;
+  const float scale = textScale;
   SDL_SetRenderScale(renderer, scale, scale);
   size_t x = (LEFT_PLAY_SCREEN);
   size_t y = (BOTTOM_PLAY_SCREEN * 8) + 1;
@@ -359,22 +430,29 @@ renderGameMode(EGameMode mode) {
   switch (mode) {
     case GameRestart:
       /* FALLTHROUGH */
-    case GameNotStated: SDL_RenderDebugText(renderer, x, y, "Game Not Started"); break;
-    case GameInProgress: SDL_RenderDebugText(renderer, x, y + 1, "In Progress"); break;
-    default: break;
+    case GameNotStated:
+      SDL_RenderDebugText(renderer, x, y, "Game Not Started");
+
+      break;
+    case GameInProgress:
+      SDL_RenderDebugText(renderer, x, y + 1, "In Progress");
+
+      break;
+    default:
+      break;
   }
 }
 
 void
 renderLostText(Screen* screen) {
-  const float scale = 4.0f;
+  const float scale = textScale;
   SDL_SetRenderScale(renderer, scale, scale);
   size_t x = (LEFT_PLAY_SCREEN);
-  size_t y = (BOTTOM_PLAY_SCREEN * 8) + 1;
+  size_t y = (BOTTOM_PLAY_SCREEN * 32) + 1;
 
   SDL_RenderDebugText(renderer, x, y, "Lost!");
-  SDL_RenderDebugText(renderer, x, y + 8, "Press R to (R)estart");
-  SDL_RenderDebugText(renderer, x, y + 16, "Press Q to (Q)uit");
+  SDL_RenderDebugText(renderer, x, y + 180, "Press R to (R)estart");
+  SDL_RenderDebugText(renderer, x, y + 200, "Press Q to (Q)uit");
 }
 
 /* This function runs once per frame, and is the heart of the program. */
@@ -383,7 +461,7 @@ SDL_AppIterate(void* appstate) {
   /* Snake* snake = get_snake_location(game); */
   Ball* ball = getBall(screen);
 
-  const float scale = 32.0f;
+  const float scale = pixelScale;
   SDL_SetRenderScale(renderer, scale, scale);
 
   bool isGameLost = isLost(screen);
@@ -404,40 +482,42 @@ SDL_AppIterate(void* appstate) {
   }
 
   // Move the snake
-  bool isScreenRerendered = false;
-  uint64_t newRerenderedMovementFrames = SDL_GetTicks();
-  if (newRerenderedMovementFrames >= rerenderedMovementFrames + ONE_HUNDRED_MILLISECONDS) {
-    isScreenRerendered = true;
-    rerenderedMovementFrames = newRerenderedMovementFrames;
-  }
+  // TODO: change to false
+  bool isScreenRerendered = true;
+  /* uint64_t newRerenderedMovementFrames = SDL_GetTicks(); */
+  /* if (newRerenderedMovementFrames >= rerenderedMovementFrames + 2 * ONE_HUNDRED_MILLISECONDS) { */
+  /*   isScreenRerendered = true; */
+  /*   rerenderedMovementFrames = newRerenderedMovementFrames; */
+  /* } */
 
   /* if (isGameLost) { */
   /*   renderLostText(screen); */
   /*  */
   /*   SDL_RenderPresent(renderer); */
-  if (isScreenRerendered) {
-    render(screen);
-    renderPlayer(getLeftPlayer(screen));
-    renderPlayer(getRightPlayer(screen));
+  /* if (isScreenRerendered) { */
+  render(screen);
+  renderPlayer(getLeftPlayer(screen));
+  renderPlayer(getRightPlayer(screen));
 
-    renderBall(ball);
+  renderBall(ball);
 
-    EGameMode gameMode = getGameMode(screen);
-    renderGameMode(gameMode);
+  EGameMode gameMode = getGameMode(screen);
+  renderGameMode(gameMode);
 
-    SDL_RenderPresent(renderer);
+  SDL_RenderPresent(renderer);
 
-    if (getGameMode(screen) == GameInProgress) {
-      moveScreenBall(screen);
-    }
+  if (getGameMode(screen) == GameInProgress && isScreenRerendered) {
+    moveScreenBall(screen);
   }
+  /* } */
 
-  SDL_Delay(TEN_MILLISECONDS);
+  SDL_Delay(TIME_DELAY);
 
   return SDL_APP_CONTINUE;
 }
 
 /* This function runs once at shutdown. */
 void
-SDL_AppQuit(void* appstate, SDL_AppResult result) {}
-
+SDL_AppQuit(void* appstate, SDL_AppResult result) {
+  return;
+}
