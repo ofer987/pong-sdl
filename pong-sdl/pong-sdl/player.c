@@ -78,13 +78,18 @@ destroyPlayer(Player* player) {
 
 bool
 movePlayerUp(Player* player) {
+  size_t topY = getPixelY(player->top);
+  if (topY <= (TOP_BORDER + PLAYER_BLOCK_HEIGHT)) {
+    return false;
+  }
+
   return movePixelUp(player->top);
 }
 
 bool
 movePlayerDown(Player* player) {
   size_t topY = getPixelY(player->top);
-  if ((topY + player->height) == (BOTTOM_PLAY_SCREEN - TOP_PLAY_SCREEN)) {
+  if ((topY + player->height) >= BOTTOM_BORDER) {
     return false;
   }
 
