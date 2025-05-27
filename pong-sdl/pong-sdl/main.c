@@ -45,7 +45,7 @@
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
 
-static Uint32 TIME_DELAY = 5;
+static Uint32 TIME_DELAY = 10;
 static Uint32 TEN_MILLISECONDS = 10;
 static Uint64 ONE_HUNDRED_MILLISECONDS = 100;
 
@@ -196,11 +196,11 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
       Player* rightPlayer = getRightPlayer(screen);
 
       switch (key) {
-        case SDLK_A:
+        case SDLK_S:
           movePlayerDown(leftPlayer);
 
           break;
-        case SDLK_S:
+        case SDLK_A:
           movePlayerUp(leftPlayer);
 
           break;
