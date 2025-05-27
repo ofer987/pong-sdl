@@ -49,8 +49,8 @@ static Uint32 TIME_DELAY = 5;
 static Uint32 TEN_MILLISECONDS = 10;
 static Uint64 ONE_HUNDRED_MILLISECONDS = 100;
 
-static const float pixelScale = 2.0f;
-static const float textScale = 2.0f;
+static const float pixelScale = 1.5f;
+static const float textScale = 1.5f;
 
 static uint64_t rerenderedMovementFrames = 0;
 
