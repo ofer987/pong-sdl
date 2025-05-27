@@ -388,6 +388,46 @@ render(Screen* screen) {
 }
 
 void
+renderBorders() {
+  // clang-format off
+  SDL_FRect topBorder = {
+    .x = LEFT_BORDER,
+    .y = TOP_BORDER,
+    .w = RIGHT_BORDER,
+    .h = BORDER_HEIGHT
+  };
+  SDL_FRect bottomBorder = {
+    .x = LEFT_BORDER,
+    .y = BOTTOM_BORDER,
+    .w = RIGHT_BORDER,
+    .h = BORDER_HEIGHT
+  };
+  SDL_FRect leftBorder = {
+    .x = LEFT_BORDER,
+    .y = TOP_BORDER + BORDER_HEIGHT,
+    .w = BORDER_WIDTH,
+    .h = BOTTOM_BORDER - BORDER_HEIGHT
+  };
+  SDL_FRect rightBorder = {
+    .x = RIGHT_BORDER,
+    .y = TOP_BORDER,
+    .w = BORDER_WIDTH,
+    .h = BOTTOM_BORDER + BORDER_HEIGHT
+  };
+  // clang-format on
+
+  Uint8 red = 255, blue = 255, green = 255;
+
+  SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
+  SDL_RenderFillRect(renderer, &topBorder);
+  SDL_RenderFillRect(renderer, &bottomBorder);
+  SDL_RenderFillRect(renderer, &leftBorder);
+  SDL_RenderFillRect(renderer, &rightBorder);
+
+  return;
+}
+
+void
 renderBall(Ball* ball) {
   Uint64 red = 0, blue = 255, green = 0;
 
@@ -469,6 +509,7 @@ SDL_AppIterate(void* appstate) {
     setGameToLost(screen);
 
     render(screen);
+    renderBorders();
     renderPlayer(getLeftPlayer(screen));
     renderPlayer(getRightPlayer(screen));
     renderBall(ball);
@@ -496,6 +537,7 @@ SDL_AppIterate(void* appstate) {
   /*   SDL_RenderPresent(renderer); */
   /* if (isScreenRerendered) { */
   render(screen);
+  renderBorders();
   renderPlayer(getLeftPlayer(screen));
   renderPlayer(getRightPlayer(screen));
 

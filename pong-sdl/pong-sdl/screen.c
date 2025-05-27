@@ -42,8 +42,8 @@ initScreen(size_t topBorderY, size_t bottomBorderY) {
   result->ball = initBall();
   result->mode = GameNotStated;
 
-  result->topBorder = initBorder(topBorderY, TOP_BORDER);
-  result->bottomBorder = initBorder(bottomBorderY, BOTTOM_BORDER);
+  result->topBorder = initBorder(topBorderY, TOP_BORDER_SIDE);
+  result->bottomBorder = initBorder(bottomBorderY, BOTTOM_BORDER_SIDE);
   return result;
 }
 

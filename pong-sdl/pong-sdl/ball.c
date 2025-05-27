@@ -289,13 +289,13 @@ isCollidedWithBorder(Ball* ball, Border* border) {
 
   int32_t borderY = (int32_t)getBorderY(border);
   switch (getBorderSide(border)) {
-    case TOP_BORDER:
+    case TOP_BORDER_SIDE:
       if (nextBallPixelY <= borderY) {
         return true;
       }
 
       break;
-    case BOTTOM_BORDER:
+    case BOTTOM_BORDER_SIDE:
       if (nextBallPixelY >= borderY) {
         return true;
       }
