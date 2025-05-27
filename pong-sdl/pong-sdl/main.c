@@ -464,8 +464,8 @@ void
 renderGameMode(EGameMode mode) {
   const float scale = textScale;
   SDL_SetRenderScale(renderer, scale, scale);
-  size_t x = (LEFT_PLAY_SCREEN);
-  size_t y = (BOTTOM_PLAY_SCREEN * 8) + 1;
+  size_t x = LEFT_TEXT_AREA;
+  size_t y = TOP_TEXT_AREA;
 
   switch (mode) {
     case GameRestart:
@@ -475,7 +475,7 @@ renderGameMode(EGameMode mode) {
 
       break;
     case GameInProgress:
-      SDL_RenderDebugText(renderer, x, y + 1, "In Progress");
+      SDL_RenderDebugText(renderer, x, y, "In Progress");
 
       break;
     default:
@@ -487,12 +487,12 @@ void
 renderLostText(Screen* screen) {
   const float scale = textScale;
   SDL_SetRenderScale(renderer, scale, scale);
-  size_t x = (LEFT_PLAY_SCREEN);
-  size_t y = (BOTTOM_PLAY_SCREEN * 32) + 1;
+  size_t x = LEFT_TEXT_AREA;
+  size_t y = TOP_TEXT_AREA;
 
   SDL_RenderDebugText(renderer, x, y, "Lost!");
-  SDL_RenderDebugText(renderer, x, y + 180, "Press R to (R)estart");
-  SDL_RenderDebugText(renderer, x, y + 200, "Press Q to (Q)uit");
+  SDL_RenderDebugText(renderer, x, y + TEXT_AREA_HEIGHT, "Press R to (R)estart");
+  SDL_RenderDebugText(renderer, x, y + TEXT_AREA_HEIGHT * 2, "Press Q to (Q)uit");
 }
 
 /* This function runs once per frame, and is the heart of the program. */

@@ -34,4 +34,8 @@
 #define PLAYER_WIDTH         10
 #define PLAYER_HEIGHT        150
 
+#define TOP_TEXT_AREA        TOP_BORDER
+#define LEFT_TEXT_AREA       RIGHT_BORDER + 2 * BORDER_WIDTH
+#define TEXT_AREA_HEIGHT     10
+
 #endif
