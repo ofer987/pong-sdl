@@ -524,12 +524,12 @@ SDL_AppIterate(void* appstate) {
 
   // Move the snake
   // TODO: change to false
-  bool isScreenRerendered = true;
-  /* uint64_t newRerenderedMovementFrames = SDL_GetTicks(); */
-  /* if (newRerenderedMovementFrames >= rerenderedMovementFrames + 2 * ONE_HUNDRED_MILLISECONDS) { */
-  /*   isScreenRerendered = true; */
-  /*   rerenderedMovementFrames = newRerenderedMovementFrames; */
-  /* } */
+  bool isScreenRerendered = false;
+  uint64_t newRerenderedMovementFrames = SDL_GetTicks();
+  if (newRerenderedMovementFrames >= rerenderedMovementFrames + 1.5 * TEN_MILLISECONDS) {
+    isScreenRerendered = true;
+    rerenderedMovementFrames = newRerenderedMovementFrames;
+  }
 
   /* if (isGameLost) { */
   /*   renderLostText(screen); */
