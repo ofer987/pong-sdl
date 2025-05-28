@@ -372,11 +372,11 @@ renderGameMode(Screen* screen) {
       winningSide = getLastPlayerToWin(screen);
       switch (winningSide) {
         case LEFT_SIDE:
-          SDL_RenderDebugText(renderer, x, y, "Right Player wins the round!");
+          SDL_RenderDebugText(renderer, x, y, "Left Player wins the round!");
 
           break;
         case RIGHT_SIDE:
-          SDL_RenderDebugText(renderer, x, y, "Left Player wins the round!");
+          SDL_RenderDebugText(renderer, x, y, "Right Player wins the round!");
 
           break;
       }

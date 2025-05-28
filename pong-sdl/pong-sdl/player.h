@@ -10,6 +10,7 @@ enum EPlayerSide { LEFT_SIDE = 1, RIGHT_SIDE };
 
 typedef struct _player Player;
 
+void reinitPlayer(Player*);
 void reinitPlayerScore(Player*);
 void incrementPlayerScore(Player*);
 size_t getPlayerScore(Player*);
