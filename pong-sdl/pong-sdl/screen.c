@@ -105,12 +105,12 @@ startGame(Screen* screen) {
 
 void
 restartGame(Screen* screen) {
-  screen->mode = GameRestart;
+  screen->mode = GameInProgress;
 
   free(screen->ball);
   screen->ball = NULL;
-
   screen->ball = initBall();
+
   free(screen->leftPlayer);
   screen->leftPlayer = NULL;
   screen->leftPlayer = initPlayer(LEFT_SIDE, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -118,6 +118,8 @@ restartGame(Screen* screen) {
   free(screen->rightPlayer);
   screen->rightPlayer = NULL;
   screen->rightPlayer = initPlayer(RIGHT_SIDE, PLAYER_WIDTH, PLAYER_HEIGHT);
+
+  screen->lastPlayerToWin = 0;
 }
 
 void

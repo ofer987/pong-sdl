@@ -231,115 +231,6 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
   return SDL_APP_CONTINUE;
 }
 
-/* void */
-/* render_record(size_t score) { */
-/*   const float scale = 2.0f; */
-/*  */
-/*   SDL_SetRenderScale(renderer, scale, scale); */
-/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
-/*   #<{(| SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT, "Record: %zu", score); |)}># */
-/* } */
-
-/* void */
-/* render_text(size_t score) { */
-/*   const float scale = 2.0f; */
-/*  */
-/*   SDL_SetRenderScale(renderer, scale, scale); */
-/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
-/*   #<{(| SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 10, "Score:  %zu", score); |)}># */
-/* } */
-/*  */
-/* void */
-/* render_keys(void) { */
-/*   const float scale = 2.0f; */
-/*  */
-/*   SDL_SetRenderScale(renderer, scale, scale); */
-/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
-/*   #<{(| SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Press:  (Q)uit | (R)estart | (P)ause"); |)}># */
-/* } */
-/*  */
-/* void */
-/* render_lost_keys(void) { */
-/*   const float scale = 2.0f; */
-/*  */
-/*   SDL_SetRenderScale(renderer, scale, scale); */
-/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
-/*   #<{(| SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Press:  (Q)uit | (R)estart"); |)}># */
-/* } */
-/*  */
-/* void */
-/* render_pause(void) { */
-/*   const float scale = 2.0f; */
-/*  */
-/*   SDL_SetRenderScale(renderer, scale, scale); */
-/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
-/*   #<{(| SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "Game is Paused. Any key to continue"); |)}># */
-/* } */
-/*  */
-/* void */
-/* render_quit(void) { */
-/*   const float scale = 2.0f; */
-/*  */
-/*   SDL_SetRenderScale(renderer, scale, scale); */
-/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
-/*   #<{(| SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "Press Q again to Quit"); |)}># */
-/* } */
-/*  */
-/* void */
-/* render_lost(void) { */
-/*   const float scale = 2.0f; */
-/*  */
-/*   SDL_SetRenderScale(renderer, scale, scale); */
-/*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
-/*   #<{(| SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "You have lost!"); |)}># */
-/* } */
-
-/* void */
-/* renderPlayer(Player* player) {} */
-
-/* void */
-/* renderScreen(Screen* screen) { */
-/*   Pixel* pixel = NULL; */
-/*   renderPlayer(screen->leftPlayer); */
-/*   renderPlayer(screen->rightPlayer); */
-/* } */
-
-/* void */
-/* void */
-/* drawCircle(SDL_Renderer* renderer, int32_t centreX, int32_t centreY, int32_t radius) { */
-/*   const int32_t diameter = (radius * 2); */
-/*  */
-/*   int32_t x = (radius - 1); */
-/*   int32_t y = 0; */
-/*   int32_t tx = 1; */
-/*   int32_t ty = 1; */
-/*   int32_t error = (tx - diameter); */
-/*  */
-/*   while (x >= y) { */
-/*     //  Each of the following renders an octant of the circle */
-/*     SDL_RenderPoint(renderer, centreX + x, centreY - y); */
-/*     SDL_RenderPoint(renderer, centreX + x, centreY + y); */
-/*     SDL_RenderPoint(renderer, centreX - x, centreY - y); */
-/*     SDL_RenderPoint(renderer, centreX - x, centreY + y); */
-/*     SDL_RenderPoint(renderer, centreX + y, centreY - x); */
-/*     SDL_RenderPoint(renderer, centreX + y, centreY + x); */
-/*     SDL_RenderPoint(renderer, centreX - y, centreY - x); */
-/*     SDL_RenderPoint(renderer, centreX - y, centreY + x); */
-/*  */
-/*     if (error <= 0) { */
-/*       ++y; */
-/*       error += ty; */
-/*       ty += 2; */
-/*     } */
-/*  */
-/*     if (error > 0) { */
-/*       --x; */
-/*       tx += 2; */
-/*       error += (tx - diameter); */
-/*     } */
-/*   } */
-/* } */
-
 void
 renderPlayerScore(Player* player, size_t x, size_t y) {
   size_t score = getPlayerScore(player);
@@ -373,50 +264,22 @@ render(Screen* screen) {
   // Render screen
   Uint8 red = 0, green = 0, blue = 0;
   SDL_FRect myFrects[TOTAL_PIXELS];
-  /* SDL_FRect* snake_head_rect = NULL; */
 
-  SDL_FRect screenRect = {.x = 0.0f,
-                          .y = 0.0f,
-                          .w = (float)(RIGHT_PLAY_SCREEN - LEFT_PLAY_SCREEN),
-                          .h = (float)(BOTTOM_PLAY_SCREEN - TOP_PLAY_SCREEN)};
+  // clang-format off
+  SDL_FRect screenRect = {
+    .x = 0.0f,
+    .y = 0.0f,
+    .w = (float)(RIGHT_PLAY_SCREEN - LEFT_PLAY_SCREEN),
+    .h = (float)(BOTTOM_PLAY_SCREEN - TOP_PLAY_SCREEN)
+  };
+  // clang-format on
+
   red = 0;
   green = 0;
   blue = 0;
 
   SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
   SDL_RenderFillRect(renderer, &screenRect);
-
-  /* Coordinates* screen_coordinates = screen[index]; */
-  // TODO: adjust for 0-based later
-  /* size_t index = 0; */
-  /* for (size_t row = TOP_PLAY_SCREEN; row < BOTTOM_PLAY_SCREEN; row += 1) { */
-  /*   for (size_t column = LEFT_PLAY_SCREEN; column < RIGHT_PLAY_SCREEN; column += 1) { */
-  /*     myFrects[index].x = column; */
-  /*     myFrects[index].y = row; */
-  /*     myFrects[index].w = 1; */
-  /*     myFrects[index].h = 1; */
-  /*  */
-  /*     red = 127; */
-  /*     green = 127; */
-  /*     blue = 127; */
-  /*  */
-  /*     SDL_SetRenderDrawColor(renderer, red, green, blue, 255); */
-  /*     SDL_RenderFillRect(renderer, &myFrects[index]); */
-  /*  */
-  /*     index += 1; */
-  /*   } */
-  /* } */
-
-  /* red = 100; */
-  /* green = 200; */
-  /* blue = 50; */
-
-  /* SDL_RenderPoint(renderer, 3, 5); */
-  /* SDL_SetRenderDrawColor(renderer, red, green, blue, 255); */
-  /* drawCircle(renderer, 250, 250, 10); */
-
-  /* SDL_FPoint points[1] = {{.x = 2, .y = 0}}; */
-  /* SDL_RenderPoints(renderer, points, 500); */
 }
 
 void
@@ -476,12 +339,9 @@ renderPlayer(Player* player) {
   size_t x = getPixelX(pixel);
   size_t y = getPixelY(pixel);
 
-  /* size_t length = getPlayerLength(player); */
   SDL_FRect playerFrect;
 
-  static Uint64 red = 255, blue = 0, green = 0;
-  /* for (size_t index = 0; index < length; index += 1) { */
-  /* SDL_FRect frect = myFrects[index]; */
+  static Uint8 red = 255, blue = 0, green = 0;
 
   playerFrect.x = x;
   playerFrect.y = y;
@@ -528,8 +388,17 @@ renderGameMode(Screen* screen) {
       SDL_RenderDebugText(renderer, x, y + TEXT_AREA_HEIGHT * 6, "Press C to (C)ontinue");
       SDL_RenderDebugText(renderer, x, y + TEXT_AREA_HEIGHT * 7, "Press Q to (Q)uit");
       break;
+    case GamePaused:
+      SDL_RenderDebugText(renderer, x, y, "Paused");
+
+      renderPlayerScore(leftPlayer, x, y + TEXT_AREA_HEIGHT * 2);
+      renderPlayerScore(rightPlayer, x, y + TEXT_AREA_HEIGHT * 3);
+
+      SDL_RenderDebugText(renderer, x, y + TEXT_AREA_HEIGHT * 5, "Press P to un(P)ause");
+      break;
     case GameInProgress:
       SDL_RenderDebugText(renderer, x, y, "Playing");
+
       renderPlayerScore(leftPlayer, x, y + TEXT_AREA_HEIGHT * 2);
       renderPlayerScore(rightPlayer, x, y + TEXT_AREA_HEIGHT * 3);
 
