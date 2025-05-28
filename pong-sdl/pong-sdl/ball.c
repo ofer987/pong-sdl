@@ -20,8 +20,9 @@ struct _ballMovement {
 typedef struct _ballMovement BallMovement;
 
 // clang-format off
-const static BallMovement ballMovements[8] = {
-  [7] = {.x = 0.0f,  .y = 0.0f},
+enum EBallMovements { DO_NOT_MOVE_BALL_MOVEMENT = 7, TOTAL_BALL_MOVEMENTS = 8 };
+const static BallMovement ballMovements[TOTAL_BALL_MOVEMENTS] = {
+  [DO_NOT_MOVE_BALL_MOVEMENT] = {.x = 0.0f,  .y = 0.0f},
   [0] = {.x = 3.2f / 1, .y = 0.0f / 1},
   [1] = {.x = 3.2f / 1, .y = 1.2f / 1},
   [2] = {.x = 3.2f / 1, .y = 1.6f / 1},
@@ -372,7 +373,7 @@ moveBall(Ball* ball, Player* leftPlayer, Player* rightPlayer, Border* topBorder,
 
 void
 stopBall(Ball* ball) {
-  ball->ballMovement = ballMovements[8];
+  ball->ballMovement = ballMovements[DO_NOT_MOVE_BALL_MOVEMENT];
   /* ball->xMovement = 0.0f; */
   /* ball->yMovement = 0.0f; */
 }
