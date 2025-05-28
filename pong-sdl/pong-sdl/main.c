@@ -212,10 +212,14 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
           movePlayerUp(leftPlayer);
 
           break;
+        case SDLK_DOWN:
+          /* FALLTHROUGH */
         case SDLK_J:
           movePlayerDown(rightPlayer);
 
           break;
+        case SDLK_UP:
+          /* FALLTHROUGH */
         case SDLK_K:
           movePlayerUp(rightPlayer);
 
