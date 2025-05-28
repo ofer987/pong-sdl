@@ -45,8 +45,9 @@
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
 
-static Uint32 TIME_DELAY = 10;
+static Uint32 ONE_MILLISECOND = 1;
 static Uint32 TEN_MILLISECONDS = 10;
+static Uint32 FIFTEEN_MILLISECONDS = 15;
 static Uint64 ONE_HUNDRED_MILLISECONDS = 100;
 
 static const float pixelScale = 1.5f;
@@ -431,7 +432,7 @@ SDL_AppIterate(void* appstate) {
   // TODO: change to false
   bool isScreenRerendered = false;
   uint64_t newRerenderedMovementFrames = SDL_GetTicks();
-  if (newRerenderedMovementFrames >= rerenderedMovementFrames + 1.5 * TEN_MILLISECONDS) {
+  if (newRerenderedMovementFrames >= rerenderedMovementFrames + FIFTEEN_MILLISECONDS) {
     isScreenRerendered = true;
     rerenderedMovementFrames = newRerenderedMovementFrames;
   }
@@ -457,7 +458,7 @@ SDL_AppIterate(void* appstate) {
   }
   /* } */
 
-  SDL_Delay(TIME_DELAY);
+  SDL_Delay(ONE_MILLISECOND);
 
   return SDL_APP_CONTINUE;
 }
