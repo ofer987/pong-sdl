@@ -4,7 +4,6 @@
 #include "./ball.h"
 #include "./border.h"
 #include "./constants.h"
-#include "./pixel.h"
 #include "./player.h"
 #include "./screen.h"
 
@@ -15,8 +14,22 @@ struct _screen {
   Player* leftPlayer;
   Player* rightPlayer;
   Ball* ball;
+
+  enum EPlayerSide lastPlayerToWin;
   enum EGameMode mode;
 };
+
+enum EPlayerSide
+getLastPlayerToWin(Screen* screen) {
+  // TODO: find a more elegant design pattern!
+  if (screen->lastPlayerToWin == 0) {
+    printf("Incorrect value for (screen->lastPlayerToWin)\n");
+
+    exit(EXIT_FAILURE);
+  }
+
+  return screen->lastPlayerToWin;
+}
 
 void
 initPlayers(Screen* screen) {
@@ -48,6 +61,24 @@ initScreen(size_t topBorderY, size_t bottomBorderY) {
 }
 
 void
+continueGame(Screen* screen) {
+  switch (screen->mode) {
+    case GameLost:
+      // TODO: find a more elegant design pattern
+      if (screen->lastPlayerToWin == 0) {
+        return;
+      }
+
+      reinitBall(screen->ball, screen->lastPlayerToWin);
+      screen->mode = GameInProgress;
+
+      return;
+    default:
+      return;
+  }
+}
+
+void
 startGame(Screen* screen) {
   switch (screen->mode) {
     case GameInProgress:
@@ -59,7 +90,9 @@ startGame(Screen* screen) {
 
       return;
     case GameRestart:
-      /* Fallthrough */
+      reinitPlayerScore(screen->leftPlayer);
+      reinitPlayerScore(screen->rightPlayer);
+      /* FALLTHROUGH */
     case GameNotStated:
       screen->mode = GameInProgress;
       kickBall(screen->ball);
@@ -72,25 +105,17 @@ startGame(Screen* screen) {
 
 void
 restartGame(Screen* screen) {
-  screen->mode = GameRestart;
-
   free(screen->ball);
   screen->ball = NULL;
-
   screen->ball = initBall();
-  free(screen->leftPlayer);
-  screen->leftPlayer = NULL;
-  screen->leftPlayer = initPlayer(LEFT_SIDE, PLAYER_WIDTH, PLAYER_HEIGHT);
 
-  free(screen->rightPlayer);
-  screen->rightPlayer = NULL;
-  screen->rightPlayer = initPlayer(RIGHT_SIDE, PLAYER_WIDTH, PLAYER_HEIGHT);
-}
+  reinitPlayer(screen->leftPlayer);
+  reinitPlayer(screen->rightPlayer);
 
-void
-setNewGame(Screen* screen) {
-  stopBall(screen->ball);
-  screen->mode = GameNotStated;
+  screen->lastPlayerToWin = 0;
+
+  screen->mode = GameInProgress;
+  kickBall(screen->ball);
 }
 
 void
@@ -108,7 +133,20 @@ setGameToLost(Screen* screen) {
 
 bool
 isLost(Screen* screen) {
-  return isBallOutOfBounds(screen->ball, screen->leftPlayer, screen->rightPlayer);
+  enum EPlayerSide winningSide = isBallOutOfBounds(screen->ball, screen->leftPlayer, screen->rightPlayer);
+
+  switch (winningSide) {
+    case LEFT_SIDE:
+      screen->lastPlayerToWin = LEFT_SIDE;
+
+      return true;
+    case RIGHT_SIDE:
+      screen->lastPlayerToWin = RIGHT_SIDE;
+
+      return true;
+    default:
+      return false;
+  }
 }
 
 void

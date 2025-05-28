@@ -7,7 +7,8 @@
 
 typedef struct _ball Ball;
 
-bool isBallOutOfBounds(Ball* ball, Player*, Player*);
+void reinitBall(Ball*, enum EPlayerSide);
+enum EPlayerSide isBallOutOfBounds(Ball* ball, Player*, Player*);
 void moveBall(Ball* ball, Player* leftPlayer, Player* rightPlayer, Border* topBorder, Border* bottomBorder);
 Pixel* getBallPixel(Ball*);
 void kickBall(Ball*);

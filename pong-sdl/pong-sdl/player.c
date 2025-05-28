@@ -45,6 +45,27 @@ getPlayerHeight(Player* player) {
   return player->height;
 }
 
+void
+reinitPlayer(Player* player) {
+  switch (player->side) {
+    case LEFT_SIDE:
+      player->top = initPixel(LEFT_PLAYER_START_X, PLAYER_START_TOP_Y, PLAYER_BLOCK);
+
+      break;
+    case RIGHT_SIDE:
+      player->top = initPixel(RIGHT_PLAYER_START_X, PLAYER_START_TOP_Y, PLAYER_BLOCK);
+
+      break;
+    default:
+      fprintf(stderr, "unknown EPlayerSide %ud", player->side);
+
+      exit(EXIT_FAILURE);
+  }
+  player->score = 0;
+
+  return;
+}
+
 Player*
 initPlayer(enum EPlayerSide side, int32_t width, int32_t height) {
   Player* result = malloc(sizeof(Player));
@@ -94,4 +115,19 @@ movePlayerDown(Player* player) {
   }
 
   return movePixelDown(player->top);
+}
+
+void
+reinitPlayerScore(Player* player) {
+  player->score = 0;
+}
+
+void
+incrementPlayerScore(Player* player) {
+  player->score += 1;
+}
+
+size_t
+getPlayerScore(Player* player) {
+  return player->score;
 }
