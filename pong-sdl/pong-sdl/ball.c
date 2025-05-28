@@ -20,7 +20,7 @@ struct _ballMovement {
 typedef struct _ballMovement BallMovement;
 
 // clang-format off
-enum EBallMovements { DO_NOT_MOVE_BALL_MOVEMENT = 7, TOTAL_BALL_MOVEMENTS = 8 };
+enum EBallMovements { START_BALL_MOVEMENT = 0, DO_NOT_MOVE_BALL_MOVEMENT = 7, TOTAL_BALL_MOVEMENTS = 8 };
 const static BallMovement ballMovements[TOTAL_BALL_MOVEMENTS] = {
   [DO_NOT_MOVE_BALL_MOVEMENT] = {.x = 0.0f,  .y = 0.0f},
   [0] = {.x = 3.2f / 1, .y = 0.0f / 1},
@@ -39,6 +39,9 @@ const static BallMovement ballMovements[TOTAL_BALL_MOVEMENTS] = {
 /*  { .x = 5, .y = 10 } */
 /* ] */
 
+static size_t MID_SCREEN_BALL_X = (RIGHT_PLAY_SCREEN - LEFT_PLAY_SCREEN) / 2;
+static size_t MID_SCREEN_BALL_Y = (BOTTOM_PLAY_SCREEN - TOP_PLAY_SCREEN) / 2;
+
 struct _ball {
   BallMovement ballMovement;
 
@@ -46,6 +49,23 @@ struct _ball {
   int32_t width;
   int32_t height;
 };
+
+void
+reinitBall(Ball* ball, enum EPlayerSide side) {
+  setPixelX(ball->pixel, MID_SCREEN_BALL_X);
+  setPixelY(ball->pixel, MID_SCREEN_BALL_Y);
+
+  ball->ballMovement = ballMovements[START_BALL_MOVEMENT];
+
+  switch (side) {
+    case LEFT_SIDE:
+      ball->ballMovement.x = 0 - ball->ballMovement.x;
+
+      break;
+    default:
+      break;
+  }
+}
 
 Ball*
 initBall(void) {
@@ -55,7 +75,7 @@ initBall(void) {
 
   size_t middleX = (RIGHT_PLAY_SCREEN - LEFT_PLAY_SCREEN) / 2;
   size_t middleY = (BOTTOM_PLAY_SCREEN - TOP_PLAY_SCREEN) / 2;
-  Pixel* ball = initPixel(middleX, middleY, BALL_BLOCK);
+  Pixel* ball = initPixel(MID_SCREEN_BALL_X, MID_SCREEN_BALL_Y, BALL_BLOCK);
   result->pixel = ball;
 
   result->width = BALL_WIDTH;
@@ -374,28 +394,30 @@ moveBall(Ball* ball, Player* leftPlayer, Player* rightPlayer, Border* topBorder,
 void
 stopBall(Ball* ball) {
   ball->ballMovement = ballMovements[DO_NOT_MOVE_BALL_MOVEMENT];
-  /* ball->xMovement = 0.0f; */
-  /* ball->yMovement = 0.0f; */
 }
 
-bool
+enum EPlayerSide
 isBallOutOfBounds(Ball* ball, Player* leftPlayer, Player* rightPlayer) {
   size_t ballX = getPixelX(ball->pixel);
 
   Pixel* leftPlayerPixel = getPlayerTopPixel(leftPlayer);
   size_t leftPlayerX = getPixelX(leftPlayerPixel);
 
-  if (ballX < leftPlayerX) {
-    return true;
+  if (ballX <= LEFT_BORDER) {
+    incrementPlayerScore(rightPlayer);
+
+    return RIGHT_SIDE;
   }
 
   Pixel* rightPlayerPixel = getPlayerTopPixel(rightPlayer);
   size_t rightPlayerX = getPixelX(rightPlayerPixel);
-  if (ballX > rightPlayerX) {
-    return true;
+  if (ballX >= RIGHT_BORDER) {
+    incrementPlayerScore(leftPlayer);
+
+    return LEFT_SIDE;
   }
 
-  return false;
+  return 0;
 }
 
 Pixel*
@@ -405,7 +427,7 @@ getBallPixel(Ball* ball) {
 
 void
 kickBall(Ball* ball) {
-  ball->ballMovement = ballMovements[0];
+  ball->ballMovement = ballMovements[START_BALL_MOVEMENT];
   /* ball->xMovement = initMovementX; */
   /* ball->yMovement = initMovementY; */
 }

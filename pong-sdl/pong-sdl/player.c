@@ -95,3 +95,18 @@ movePlayerDown(Player* player) {
 
   return movePixelDown(player->top);
 }
+
+void
+reinitPlayerScore(Player* player) {
+  player->score = 0;
+}
+
+void
+incrementPlayerScore(Player* player) {
+  player->score += 1;
+}
+
+size_t
+getPlayerScore(Player* player) {
+  return player->score;
+}

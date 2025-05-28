@@ -9,6 +9,8 @@ typedef enum EGameMode EGameMode;
 
 typedef struct _screen Screen;
 
+enum EPlayerSide getLastPlayerToWin(Screen*);
+void continueGame(Screen*);
 bool isLost(Screen*);
 void moveScreenBall(Screen*);
 Ball* getBall(Screen*);
@@ -19,7 +21,7 @@ Screen* initScreen(size_t, size_t);
 void deleteScreen(Screen*);
 void startGame(Screen*);
 void setGameToLost(Screen*);
-void setNewGame(Screen*);
+/* void setNewGame(Screen*); */
 void restartGame(Screen*);
 EGameMode getGameMode(Screen*);
 

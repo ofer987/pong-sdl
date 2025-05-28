@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 /* #include "./types.h" */
 #include "./constants.h"
 #include "./pixel.h"
@@ -20,7 +21,6 @@
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_keycode.h"
 #include "SDL3/SDL_mouse.h"
-#include "SDL3/SDL_oldnames.h"
 #include "SDL3/SDL_rect.h"
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_stdinc.h"
@@ -55,6 +55,8 @@ static const float textScale = 1.5f;
 static uint64_t rerenderedMovementFrames = 0;
 
 static Screen* screen;
+static Player* leftPlayer;
+static Player* rightPlayer;
 static bool movement_changed = false;
 
 #ifdef DEBUG
@@ -125,6 +127,8 @@ SDL_AppInit(void** appstate, int argc, char* argv[]) {
   }
 
   screen = initScreen(TOP_PLAY_SCREEN, BOTTOM_PLAY_SCREEN);
+  leftPlayer = getLeftPlayer(screen);
+  rightPlayer = getRightPlayer(screen);
 
   // There are 1_000_000_000 nanoseconds in a second
   /* ns_per_frame = 1000000000 / fps; */
@@ -172,6 +176,10 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
         startGame(screen);
         /* set_current_movement(game, NOTHING); */
         /* set_game_mode(game, PAUSE); */
+
+        return SDL_APP_CONTINUE;
+      case SDLK_C:
+        continueGame(screen);
 
         return SDL_APP_CONTINUE;
     }
@@ -297,39 +305,63 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
 /* } */
 
 /* void */
+/* void */
+/* drawCircle(SDL_Renderer* renderer, int32_t centreX, int32_t centreY, int32_t radius) { */
+/*   const int32_t diameter = (radius * 2); */
+/*  */
+/*   int32_t x = (radius - 1); */
+/*   int32_t y = 0; */
+/*   int32_t tx = 1; */
+/*   int32_t ty = 1; */
+/*   int32_t error = (tx - diameter); */
+/*  */
+/*   while (x >= y) { */
+/*     //  Each of the following renders an octant of the circle */
+/*     SDL_RenderPoint(renderer, centreX + x, centreY - y); */
+/*     SDL_RenderPoint(renderer, centreX + x, centreY + y); */
+/*     SDL_RenderPoint(renderer, centreX - x, centreY - y); */
+/*     SDL_RenderPoint(renderer, centreX - x, centreY + y); */
+/*     SDL_RenderPoint(renderer, centreX + y, centreY - x); */
+/*     SDL_RenderPoint(renderer, centreX + y, centreY + x); */
+/*     SDL_RenderPoint(renderer, centreX - y, centreY - x); */
+/*     SDL_RenderPoint(renderer, centreX - y, centreY + x); */
+/*  */
+/*     if (error <= 0) { */
+/*       ++y; */
+/*       error += ty; */
+/*       ty += 2; */
+/*     } */
+/*  */
+/*     if (error > 0) { */
+/*       --x; */
+/*       tx += 2; */
+/*       error += (tx - diameter); */
+/*     } */
+/*   } */
+/* } */
+
 void
-drawCircle(SDL_Renderer* renderer, int32_t centreX, int32_t centreY, int32_t radius) {
-  const int32_t diameter = (radius * 2);
+renderPlayerScore(Player* player, size_t x, size_t y) {
+  size_t score = getPlayerScore(player);
+  int32_t total_characters_read = -1;
 
-  int32_t x = (radius - 1);
-  int32_t y = 0;
-  int32_t tx = 1;
-  int32_t ty = 1;
-  int32_t error = (tx - diameter);
-
-  while (x >= y) {
-    //  Each of the following renders an octant of the circle
-    SDL_RenderPoint(renderer, centreX + x, centreY - y);
-    SDL_RenderPoint(renderer, centreX + x, centreY + y);
-    SDL_RenderPoint(renderer, centreX - x, centreY - y);
-    SDL_RenderPoint(renderer, centreX - x, centreY + y);
-    SDL_RenderPoint(renderer, centreX + y, centreY - x);
-    SDL_RenderPoint(renderer, centreX + y, centreY + x);
-    SDL_RenderPoint(renderer, centreX - y, centreY - x);
-    SDL_RenderPoint(renderer, centreX - y, centreY + x);
-
-    if (error <= 0) {
-      ++y;
-      error += ty;
-      ty += 2;
-    }
-
-    if (error > 0) {
-      --x;
-      tx += 2;
-      error += (tx - diameter);
-    }
+  char scoreBuffer[30];
+  enum EPlayerSide side = getPlayerSide(player);
+  switch (side) {
+    case LEFT_SIDE:
+      total_characters_read = snprintf(scoreBuffer, 30, "Left Player: %zu", score);
+      break;
+    case RIGHT_SIDE:
+      total_characters_read = snprintf(scoreBuffer, 30, "Right Player: %zu", score);
+      break;
   }
+
+  if (total_characters_read <= 0) {
+    printf("Failed to read score of Left Player\n");
+    exit(EXIT_FAILURE);
+  }
+
+  SDL_RenderDebugText(renderer, x, y, scoreBuffer);
 }
 
 void
@@ -461,12 +493,14 @@ renderPlayer(Player* player) {
 }
 
 void
-renderGameMode(EGameMode mode) {
+renderGameMode(Screen* screen) {
   const float scale = textScale;
   SDL_SetRenderScale(renderer, scale, scale);
   size_t x = LEFT_TEXT_AREA;
   size_t y = TOP_TEXT_AREA;
 
+  EGameMode mode = getGameMode(screen);
+  enum EPlayerSide winningSide;
   switch (mode) {
     case GameRestart:
       /* FALLTHROUGH */
@@ -474,25 +508,35 @@ renderGameMode(EGameMode mode) {
       SDL_RenderDebugText(renderer, x, y, "Game Not Started");
 
       break;
+    case GameLost:
+      winningSide = getLastPlayerToWin(screen);
+      switch (winningSide) {
+        case LEFT_SIDE:
+          SDL_RenderDebugText(renderer, x, y, "Right Player wins the round!");
+
+          break;
+        case RIGHT_SIDE:
+          SDL_RenderDebugText(renderer, x, y, "Left Player wins the round!");
+
+          break;
+      }
+
+      renderPlayerScore(leftPlayer, x, y + TEXT_AREA_HEIGHT * 2);
+      renderPlayerScore(rightPlayer, x, y + TEXT_AREA_HEIGHT * 3);
+
+      SDL_RenderDebugText(renderer, x, y + TEXT_AREA_HEIGHT * 5, "Press R to (R)estart");
+      SDL_RenderDebugText(renderer, x, y + TEXT_AREA_HEIGHT * 6, "Press C to (C)ontinue");
+      SDL_RenderDebugText(renderer, x, y + TEXT_AREA_HEIGHT * 7, "Press Q to (Q)uit");
+      break;
     case GameInProgress:
-      SDL_RenderDebugText(renderer, x, y, "In Progress");
+      SDL_RenderDebugText(renderer, x, y, "Playing");
+      renderPlayerScore(leftPlayer, x, y + TEXT_AREA_HEIGHT * 2);
+      renderPlayerScore(rightPlayer, x, y + TEXT_AREA_HEIGHT * 3);
 
       break;
     default:
       break;
   }
-}
-
-void
-renderLostText(Screen* screen) {
-  const float scale = textScale;
-  SDL_SetRenderScale(renderer, scale, scale);
-  size_t x = LEFT_TEXT_AREA;
-  size_t y = TOP_TEXT_AREA;
-
-  SDL_RenderDebugText(renderer, x, y, "Lost!");
-  SDL_RenderDebugText(renderer, x, y + TEXT_AREA_HEIGHT, "Press R to (R)estart");
-  SDL_RenderDebugText(renderer, x, y + TEXT_AREA_HEIGHT * 2, "Press Q to (Q)uit");
 }
 
 /* This function runs once per frame, and is the heart of the program. */
@@ -503,23 +547,11 @@ SDL_AppIterate(void* appstate) {
 
   const float scale = pixelScale;
   SDL_SetRenderScale(renderer, scale, scale);
+  EGameMode gameMode = getGameMode(screen);
 
-  bool isGameLost = isLost(screen);
+  bool isGameLost = (gameMode == GameLost) || isLost(screen);
   if (isGameLost) {
     setGameToLost(screen);
-
-    render(screen);
-    renderBorders();
-    renderPlayer(getLeftPlayer(screen));
-    renderPlayer(getRightPlayer(screen));
-    renderBall(ball);
-
-    renderLostText(screen);
-
-    SDL_RenderPresent(renderer);
-    setNewGame(screen);
-
-    return SDL_APP_CONTINUE;
   }
 
   // Move the snake
@@ -543,8 +575,7 @@ SDL_AppIterate(void* appstate) {
 
   renderBall(ball);
 
-  EGameMode gameMode = getGameMode(screen);
-  renderGameMode(gameMode);
+  renderGameMode(screen);
 
   SDL_RenderPresent(renderer);
 
