@@ -51,7 +51,7 @@ Ball*
 initBall(void) {
   Ball* result = malloc(sizeof(Ball));
 
-  result->ballMovement = ballMovements[8];
+  result->ballMovement = ballMovements[DO_NOT_MOVE_BALL_MOVEMENT];
 
   size_t middleX = (RIGHT_PLAY_SCREEN - LEFT_PLAY_SCREEN) / 2;
   size_t middleY = (BOTTOM_PLAY_SCREEN - TOP_PLAY_SCREEN) / 2;
