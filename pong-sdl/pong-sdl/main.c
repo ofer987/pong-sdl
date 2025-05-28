@@ -45,12 +45,12 @@
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
 
-static Uint32 TIME_DELAY = 5;
+static Uint32 TIME_DELAY = 10;
 static Uint32 TEN_MILLISECONDS = 10;
 static Uint64 ONE_HUNDRED_MILLISECONDS = 100;
 
-static const float pixelScale = 2.0f;
-static const float textScale = 2.0f;
+static const float pixelScale = 1.5f;
+static const float textScale = 1.5f;
 
 static uint64_t rerenderedMovementFrames = 0;
 
@@ -196,11 +196,11 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
       Player* rightPlayer = getRightPlayer(screen);
 
       switch (key) {
-        case SDLK_A:
+        case SDLK_S:
           movePlayerDown(leftPlayer);
 
           break;
-        case SDLK_S:
+        case SDLK_A:
           movePlayerUp(leftPlayer);
 
           break;
@@ -388,6 +388,46 @@ render(Screen* screen) {
 }
 
 void
+renderBorders() {
+  // clang-format off
+  SDL_FRect topBorder = {
+    .x = LEFT_BORDER,
+    .y = TOP_BORDER,
+    .w = RIGHT_BORDER,
+    .h = BORDER_HEIGHT
+  };
+  SDL_FRect bottomBorder = {
+    .x = LEFT_BORDER,
+    .y = BOTTOM_BORDER,
+    .w = RIGHT_BORDER,
+    .h = BORDER_HEIGHT
+  };
+  SDL_FRect leftBorder = {
+    .x = LEFT_BORDER,
+    .y = TOP_BORDER + BORDER_HEIGHT,
+    .w = BORDER_WIDTH,
+    .h = BOTTOM_BORDER - BORDER_HEIGHT
+  };
+  SDL_FRect rightBorder = {
+    .x = RIGHT_BORDER,
+    .y = TOP_BORDER,
+    .w = BORDER_WIDTH,
+    .h = BOTTOM_BORDER + BORDER_HEIGHT
+  };
+  // clang-format on
+
+  Uint8 red = 255, blue = 255, green = 255;
+
+  SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
+  SDL_RenderFillRect(renderer, &topBorder);
+  SDL_RenderFillRect(renderer, &bottomBorder);
+  SDL_RenderFillRect(renderer, &leftBorder);
+  SDL_RenderFillRect(renderer, &rightBorder);
+
+  return;
+}
+
+void
 renderBall(Ball* ball) {
   Uint64 red = 0, blue = 255, green = 0;
 
@@ -424,8 +464,8 @@ void
 renderGameMode(EGameMode mode) {
   const float scale = textScale;
   SDL_SetRenderScale(renderer, scale, scale);
-  size_t x = (LEFT_PLAY_SCREEN);
-  size_t y = (BOTTOM_PLAY_SCREEN * 8) + 1;
+  size_t x = LEFT_TEXT_AREA;
+  size_t y = TOP_TEXT_AREA;
 
   switch (mode) {
     case GameRestart:
@@ -435,7 +475,7 @@ renderGameMode(EGameMode mode) {
 
       break;
     case GameInProgress:
-      SDL_RenderDebugText(renderer, x, y + 1, "In Progress");
+      SDL_RenderDebugText(renderer, x, y, "In Progress");
 
       break;
     default:
@@ -447,12 +487,12 @@ void
 renderLostText(Screen* screen) {
   const float scale = textScale;
   SDL_SetRenderScale(renderer, scale, scale);
-  size_t x = (LEFT_PLAY_SCREEN);
-  size_t y = (BOTTOM_PLAY_SCREEN * 32) + 1;
+  size_t x = LEFT_TEXT_AREA;
+  size_t y = TOP_TEXT_AREA;
 
   SDL_RenderDebugText(renderer, x, y, "Lost!");
-  SDL_RenderDebugText(renderer, x, y + 180, "Press R to (R)estart");
-  SDL_RenderDebugText(renderer, x, y + 200, "Press Q to (Q)uit");
+  SDL_RenderDebugText(renderer, x, y + TEXT_AREA_HEIGHT, "Press R to (R)estart");
+  SDL_RenderDebugText(renderer, x, y + TEXT_AREA_HEIGHT * 2, "Press Q to (Q)uit");
 }
 
 /* This function runs once per frame, and is the heart of the program. */
@@ -469,6 +509,7 @@ SDL_AppIterate(void* appstate) {
     setGameToLost(screen);
 
     render(screen);
+    renderBorders();
     renderPlayer(getLeftPlayer(screen));
     renderPlayer(getRightPlayer(screen));
     renderBall(ball);
@@ -483,12 +524,12 @@ SDL_AppIterate(void* appstate) {
 
   // Move the snake
   // TODO: change to false
-  bool isScreenRerendered = true;
-  /* uint64_t newRerenderedMovementFrames = SDL_GetTicks(); */
-  /* if (newRerenderedMovementFrames >= rerenderedMovementFrames + 2 * ONE_HUNDRED_MILLISECONDS) { */
-  /*   isScreenRerendered = true; */
-  /*   rerenderedMovementFrames = newRerenderedMovementFrames; */
-  /* } */
+  bool isScreenRerendered = false;
+  uint64_t newRerenderedMovementFrames = SDL_GetTicks();
+  if (newRerenderedMovementFrames >= rerenderedMovementFrames + 1.5 * TEN_MILLISECONDS) {
+    isScreenRerendered = true;
+    rerenderedMovementFrames = newRerenderedMovementFrames;
+  }
 
   /* if (isGameLost) { */
   /*   renderLostText(screen); */
@@ -496,6 +537,7 @@ SDL_AppIterate(void* appstate) {
   /*   SDL_RenderPresent(renderer); */
   /* if (isScreenRerendered) { */
   render(screen);
+  renderBorders();
   renderPlayer(getLeftPlayer(screen));
   renderPlayer(getRightPlayer(screen));
 

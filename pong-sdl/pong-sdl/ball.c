@@ -20,16 +20,15 @@ struct _ballMovement {
 typedef struct _ballMovement BallMovement;
 
 // clang-format off
-const static BallMovement ballMovements[9] = {
-  [8] = {.x = 0.0f,  .y = 0.0f},
+const static BallMovement ballMovements[8] = {
+  [7] = {.x = 0.0f,  .y = 0.0f},
   [0] = {.x = 3.2f / 1, .y = 0.0f / 1},
-  [1] = {.x = 3.0f / 1, .y = 1.2f / 1},
-  [2] = {.x = 2.8f / 1, .y = 1.6f / 1},
-  [3] = {.x = 2.5f / 1, .y = 2.0f / 1},
-  [4] = {.x = 2.3f / 1, .y = 2.3f / 1},
-  [5] = {.x = 2.0f / 1, .y = 2.5f / 1},
-  [6] = {.x = 1.6f / 1, .y = 2.8f / 1},
-  [7] = {.x = 1.2f / 1, .y = 3.0f / 1}
+  [1] = {.x = 3.2f / 1, .y = 1.2f / 1},
+  [2] = {.x = 3.2f / 1, .y = 1.6f / 1},
+  [3] = {.x = 3.2f / 1, .y = 2.0f / 1},
+  [4] = {.x = 3.2f / 1, .y = 2.3f / 1},
+  [5] = {.x = 3.2f / 1, .y = 2.5f / 1},
+  [6] = {.x = 3.2f / 1, .y = 2.8f / 1},
 };
 // clang-format on
 
@@ -289,13 +288,13 @@ isCollidedWithBorder(Ball* ball, Border* border) {
 
   int32_t borderY = (int32_t)getBorderY(border);
   switch (getBorderSide(border)) {
-    case TOP_BORDER:
+    case TOP_BORDER_SIDE:
       if (nextBallPixelY <= borderY) {
         return true;
       }
 
       break;
-    case BOTTOM_BORDER:
+    case BOTTOM_BORDER_SIDE:
       if (nextBallPixelY >= borderY) {
         return true;
       }

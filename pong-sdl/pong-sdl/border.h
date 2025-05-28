@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-enum EBorderSide { TOP_BORDER, BOTTOM_BORDER };
+enum EBorderSide { TOP_BORDER_SIDE, BOTTOM_BORDER_SIDE };
 
 typedef struct _border Border;
 
