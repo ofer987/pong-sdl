@@ -109,8 +109,13 @@ restartGame(Screen* screen) {
   screen->ball = NULL;
   screen->ball = initBall();
 
-  reinitPlayer(screen->leftPlayer);
-  reinitPlayer(screen->rightPlayer);
+  destroyPlayer(screen->leftPlayer);
+  screen->leftPlayer = NULL;
+  screen->leftPlayer = initPlayer(LEFT_SIDE, PLAYER_WIDTH, PLAYER_HEIGHT);
+
+  destroyPlayer(screen->rightPlayer);
+  screen->rightPlayer = NULL;
+  screen->rightPlayer = initPlayer(RIGHT_SIDE, PLAYER_WIDTH, PLAYER_HEIGHT);
 
   screen->lastPlayerToWin = 0;
 
