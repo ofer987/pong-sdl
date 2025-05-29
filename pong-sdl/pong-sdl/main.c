@@ -126,8 +126,6 @@ SDL_AppInit(void** appstate, int argc, char* argv[]) {
   }
 
   screen = initScreen(TOP_PLAY_SCREEN, BOTTOM_PLAY_SCREEN);
-  // There are 1_000_000_000 nanoseconds in a second
-  /* ns_per_frame = 1000000000 / fps; */
 
   return SDL_APP_CONTINUE;
 }
@@ -138,9 +136,6 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
   if (event->type == SDL_EVENT_QUIT) {
     return SDL_APP_SUCCESS; /* end the program, reporting success to the OS. */
   }
-
-  /* enum GAME_MODES game_mode = get_game_mode(game); */
-  /* enum MOVEMENTS current_movement = get_current_movement(game); */
 
   if (event->type == SDL_EVENT_KEY_DOWN) {
     SDL_Keycode key = event->key.key;
