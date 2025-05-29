@@ -56,8 +56,6 @@ static const float textScale = 1.5f;
 static uint64_t rerenderedMovementFrames = 0;
 
 static Screen* screen;
-static Player* leftPlayer;
-static Player* rightPlayer;
 static bool movement_changed = false;
 
 #ifdef DEBUG
@@ -128,9 +126,6 @@ SDL_AppInit(void** appstate, int argc, char* argv[]) {
   }
 
   screen = initScreen(TOP_PLAY_SCREEN, BOTTOM_PLAY_SCREEN);
-  leftPlayer = getLeftPlayer(screen);
-  rightPlayer = getRightPlayer(screen);
-
   // There are 1_000_000_000 nanoseconds in a second
   /* ns_per_frame = 1000000000 / fps; */
 
@@ -246,15 +241,20 @@ renderPlayerScore(Player* player, size_t x, size_t y) {
   switch (side) {
     case LEFT_SIDE:
       total_characters_read = snprintf(scoreBuffer, 30, "Left Player: %zu", score);
+
+      if (total_characters_read <= 0) {
+        printf("Failed to read score of Left Player\n");
+        exit(EXIT_FAILURE);
+      }
       break;
     case RIGHT_SIDE:
       total_characters_read = snprintf(scoreBuffer, 30, "Right Player: %zu", score);
-      break;
-  }
 
-  if (total_characters_read <= 0) {
-    printf("Failed to read score of Left Player\n");
-    exit(EXIT_FAILURE);
+      if (total_characters_read <= 0) {
+        printf("Failed to read score of Right Player\n");
+        exit(EXIT_FAILURE);
+      }
+      break;
   }
 
   SDL_RenderDebugText(renderer, x, y, scoreBuffer);
@@ -364,6 +364,8 @@ renderGameMode(Screen* screen) {
   size_t x = LEFT_TEXT_AREA;
   size_t y = TOP_TEXT_AREA;
 
+  Player* leftPlayer = getLeftPlayer(screen);
+  Player* rightPlayer = getRightPlayer(screen);
   EGameMode mode = getGameMode(screen);
   enum EPlayerSide winningSide;
   switch (mode) {
