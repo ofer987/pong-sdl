@@ -196,23 +196,24 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
 
       switch (key) {
         case SDLK_S:
-          movePlayerDown(leftPlayer);
+          setPlayerMovement(leftPlayer, DOWN_MOVEMENT);
+          /* movePlayerDown(leftPlayer); */
 
           break;
         case SDLK_A:
-          movePlayerUp(leftPlayer);
+          setPlayerMovement(leftPlayer, UP_MOVEMENT);
 
           break;
         case SDLK_DOWN:
           /* FALLTHROUGH */
         case SDLK_J:
-          movePlayerDown(rightPlayer);
+          setPlayerMovement(rightPlayer, DOWN_MOVEMENT);
 
           break;
         case SDLK_UP:
           /* FALLTHROUGH */
         case SDLK_K:
-          movePlayerUp(rightPlayer);
+          setPlayerMovement(rightPlayer, UP_MOVEMENT);
 
           break;
         default:
@@ -220,6 +221,37 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
       }
 
       return SDL_APP_CONTINUE;
+    }
+  }
+
+  if (event->type == SDL_EVENT_KEY_UP) {
+    SDL_Keycode key = event->key.key;
+
+    EGameMode mode = getGameMode(screen);
+    if (mode == GameInProgress) {
+      Player* leftPlayer = getLeftPlayer(screen);
+      Player* rightPlayer = getRightPlayer(screen);
+
+      switch (key) {
+        case SDLK_S:
+          /* FALLTHROUGH */
+        case SDLK_A:
+          setPlayerMovement(leftPlayer, NO_MOVEMENT);
+
+          break;
+        case SDLK_DOWN:
+          /* FALLTHROUGH */
+        case SDLK_J:
+          /* FALLTHROUGH */
+        case SDLK_UP:
+          /* FALLTHROUGH */
+        case SDLK_K:
+          setPlayerMovement(rightPlayer, NO_MOVEMENT);
+
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -419,6 +451,26 @@ SDL_AppIterate(void* appstate) {
   const float scale = pixelScale;
   SDL_SetRenderScale(renderer, scale, scale);
   EGameMode gameMode = getGameMode(screen);
+  if (gameMode == GameInProgress) {
+    Player* leftPlayer = getLeftPlayer(screen);
+    Player* rightPlayer = getRightPlayer(screen);
+
+    Player* players[2] = {leftPlayer, rightPlayer};
+    for (size_t index = 0; index < 2; index += 1) {
+      Player* player = players[index];
+      switch (getPlayerMovement(player)) {
+        case NO_MOVEMENT:
+          break;
+
+        case UP_MOVEMENT:
+          movePlayerUp(player);
+
+          break;
+        case DOWN_MOVEMENT:
+          movePlayerDown(player);
+      }
+    }
+  }
 
   bool isGameLost = (gameMode == GameLost) || isLost(screen);
   if (isGameLost) {
@@ -455,7 +507,7 @@ SDL_AppIterate(void* appstate) {
   }
   /* } */
 
-  SDL_Delay(ONE_MILLISECOND);
+  SDL_Delay(TEN_MILLISECONDS);
 
   return SDL_APP_CONTINUE;
 }
