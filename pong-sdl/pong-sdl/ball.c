@@ -153,7 +153,7 @@ isCollidedWithPlayer(Ball* ball, Player* player) {
     return false;
   }
 
-  if (ballAtPlayerY >= playerPixelY && ballAtPlayerY < (playerPixelY + playerLengthY)) {
+  if (ballAtPlayerY >= (playerPixelY - BALL_HEIGHT / 2) && ballAtPlayerY < (playerPixelY + playerLengthY)) {
     return true;
   }
 
