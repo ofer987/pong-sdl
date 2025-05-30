@@ -2,6 +2,8 @@
 
 Pong written in [C](https://en.wikipedia.org/wiki/C_(programming_language)), but implemented in [SDL](https://en.wikipedia.org/wiki/Simple_DirectMedia_Layer).
 
+![Screenshot](https://raw.githubusercontent.com/ofer987/pong-sdl/refs/heads/master/images/pong_sdl_screenshot.jpg)
+
 ## Installation Instructions
 
 According to SDL, it is possible to install on Windows and macOS, https://github.com/libsdl-org/SDL/blob/main/INSTALL.md. But I have only built it for macOS.
