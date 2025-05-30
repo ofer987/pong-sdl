@@ -61,8 +61,8 @@ SDL_AppInit(void** appstate, int argc, char* argv[]) {
   SDL_HideCursor();
 
   /* Create the window */
-  if (!SDL_CreateWindowAndRenderer("Pong SDL", RIGHT_PLAY_SCREEN - LEFT_PLAY_SCREEN,
-                                   BOTTOM_PLAY_SCREEN - TOP_PLAY_SCREEN, WINDOW_SCREEN_MODE | SDL_WINDOW_INPUT_FOCUS,
+  if (!SDL_CreateWindowAndRenderer("Pong SDL", (LEFT_TEXT_AREA + 10 - LEFT_BORDER) * 2,
+                                   (BOTTOM_BORDER - TOP_BORDER) * 2, WINDOW_SCREEN_MODE | SDL_WINDOW_INPUT_FOCUS,
                                    &window, &renderer)) {
     SDL_Log("Couldn't create window and renderer: %s", SDL_GetError());
     return SDL_APP_FAILURE;
