@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-/* #include "./types.h" */
 #include "./constants.h"
 #include "./pixel.h"
 #include "./player.h"
@@ -31,16 +30,9 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
-/* #include "./constants.h" */
-/* #include "./coordinates.h" */
-/* #include "./game.h" */
-/* #include "./snake.h" */
-
-/* #include "./constants.h" */
 #include "./ball.h"
 #include "./player.h"
 #include "./screen.h"
-/* #include "./player.h" */
 
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
@@ -56,7 +48,6 @@ static const float textScale = 1.5f;
 static uint64_t rerenderedMovementFrames = 0;
 
 static Screen* screen;
-static bool movement_changed = false;
 
 #ifdef DEBUG
 #define WINDOW_SCREEN_MODE SDL_WINDOW_FULLSCREEN
@@ -64,62 +55,14 @@ static bool movement_changed = false;
 #define WINDOW_SCREEN_MODE SDL_WINDOW_MAXIMIZED
 #endif
 
-static size_t RECORD = 0;
-static size_t SCORE = 0;
-static char const* const RECORD_PATH = "record.txt";
-
-/* size_t */
-/* get_score(Game* game) { */
-/*   Snake* snake = get_snake_location(game); */
-/*   return get_snake_length(snake) - 1; */
-/* } */
-
-bool
-write_record(char* record_path, size_t record) {
-  FILE* path = fopen(record_path, "wt");
-  if (path == NULL) {
-    fprintf(stderr, "Failed to write the record (%zu) to %s\n", record, record_path);
-
-    return false;
-  }
-
-  fprintf(path, "%zu", record);
-  return true;
-}
-
-void
-render_achievement(size_t new_record) {
-  const float scale = 2.0f;
-
-  SDL_SetRenderScale(renderer, scale, scale);
-  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  /* SDL_RenderDebugTextFormat(renderer, MAZE_WIDTH / 2.0, MAZE_HEIGHT / 2.0, "New Record:  %zu", new_record); */
-}
-
-size_t
-read_current_record(char* path) {
-  FILE* file = fopen(path, "rt");
-  if (file == NULL) {
-    return 0;
-  }
-
-  size_t result = 0;
-  fscanf(file, "%zu", &result);
-
-  return result;
-}
-
 /* This function runs once at startup. */
 SDL_AppResult
 SDL_AppInit(void** appstate, int argc, char* argv[]) {
-  srandom((unsigned)time(NULL));
-  RECORD = read_current_record((char*)RECORD_PATH);
-
   SDL_HideCursor();
 
   /* Create the window */
-  if (!SDL_CreateWindowAndRenderer("Pong SDL", RIGHT_PLAY_SCREEN - LEFT_PLAY_SCREEN,
-                                   BOTTOM_PLAY_SCREEN - TOP_PLAY_SCREEN, WINDOW_SCREEN_MODE | SDL_WINDOW_INPUT_FOCUS,
+  if (!SDL_CreateWindowAndRenderer("Pong SDL", (LEFT_TEXT_AREA + 10 - LEFT_BORDER) * 2,
+                                   (BOTTOM_BORDER - TOP_BORDER) * 2, WINDOW_SCREEN_MODE | SDL_WINDOW_INPUT_FOCUS,
                                    &window, &renderer)) {
     SDL_Log("Couldn't create window and renderer: %s", SDL_GetError());
     return SDL_APP_FAILURE;
@@ -141,23 +84,6 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
     SDL_Keycode key = event->key.key;
     switch (key) {
       case SDLK_Q:
-        /* SCORE = get_score(game); */
-        /* set_game_mode(game, QUIT); */
-        /*  */
-        /* // Press Q twice to quit the game */
-        /* switch (game_mode) { */
-        /*   case LOST: */
-        /*     #<{(| FALLTHROUGH |)}># */
-        /*   case QUIT: */
-        /*     // end the program, reporting success to the OS. */
-        /*     return SDL_APP_SUCCESS; */
-        /*   default: break; */
-        /* } */
-
-        /* if (SCORE > RECORD) { */
-        /*   write_record((char*)RECORD_PATH, SCORE); */
-        /* } */
-
         return SDL_APP_SUCCESS;
       case SDLK_R:
         restartGame(screen);
@@ -165,20 +91,12 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
         return SDL_APP_CONTINUE;
       case SDLK_P:
         startGame(screen);
-        /* set_current_movement(game, NOTHING); */
-        /* set_game_mode(game, PAUSE); */
 
         return SDL_APP_CONTINUE;
       case SDLK_C:
         continueGame(screen);
 
         return SDL_APP_CONTINUE;
-    }
-
-    // Return early
-    // If the movement-change has not been rendered
-    if (movement_changed) {
-      return SDL_APP_CONTINUE;
     }
 
     EGameMode mode = getGameMode(screen);
@@ -445,7 +363,6 @@ renderGameMode(Screen* screen) {
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult
 SDL_AppIterate(void* appstate) {
-  /* Snake* snake = get_snake_location(game); */
   Ball* ball = getBall(screen);
 
   const float scale = pixelScale;
@@ -477,20 +394,12 @@ SDL_AppIterate(void* appstate) {
     setGameToLost(screen);
   }
 
-  // Move the snake
-  // TODO: change to false
   bool isScreenRerendered = false;
   uint64_t newRerenderedMovementFrames = SDL_GetTicks();
   if (newRerenderedMovementFrames >= rerenderedMovementFrames + TEN_MILLISECONDS) {
     isScreenRerendered = true;
     rerenderedMovementFrames = newRerenderedMovementFrames;
   }
-
-  /* if (isGameLost) { */
-  /*   renderLostText(screen); */
-  /*  */
-  /*   SDL_RenderPresent(renderer); */
-  /* if (isScreenRerendered) { */
   render(screen);
   renderBorders();
   renderPlayer(getLeftPlayer(screen));
@@ -505,7 +414,6 @@ SDL_AppIterate(void* appstate) {
   if (getGameMode(screen) == GameInProgress && isScreenRerendered) {
     moveScreenBall(screen);
   }
-  /* } */
 
   SDL_Delay(TEN_MILLISECONDS);
 
