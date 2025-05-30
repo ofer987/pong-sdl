@@ -6,10 +6,14 @@
 
 #include "./pixel.h"
 
+enum EPlayerMovement { NO_MOVEMENT, DOWN_MOVEMENT, UP_MOVEMENT };
+
 enum EPlayerSide { LEFT_SIDE = 1, RIGHT_SIDE };
 
 typedef struct _player Player;
 
+enum EPlayerMovement getPlayerMovement(Player*);
+void setPlayerMovement(Player*, enum EPlayerMovement);
 void reinitPlayerScore(Player*);
 void incrementPlayerScore(Player*);
 size_t getPlayerScore(Player*);

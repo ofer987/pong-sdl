@@ -32,7 +32,7 @@
 #define BALL_HEIGHT          10
 
 #define PLAYER_WIDTH         10
-#define PLAYER_HEIGHT        130
+#define PLAYER_HEIGHT        90
 #define PLAYER_BLOCK_HEIGHT  10
 
 #define TOP_TEXT_AREA        TOP_BORDER

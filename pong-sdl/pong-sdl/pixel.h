@@ -20,7 +20,6 @@ void destroyPixel(Pixel* pixel);
 
 bool movePixelUp(Pixel* pixel);
 bool movePixelDown(Pixel* pixel);
-bool movePixelDownWithConstaint(Pixel* pixel, size_t lengt);
 bool movePixelLeft(Pixel* pixel);
 bool movePixelRight(Pixel* pixel);
 

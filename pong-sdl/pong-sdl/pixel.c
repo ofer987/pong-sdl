@@ -53,7 +53,7 @@ movePixelUp(Pixel* pixel) {
     return false;
   }
 
-  pixel->y -= BLOCK_WIDTH;
+  pixel->y -= BLOCK_WIDTH / 2;
 
   return true;
 }
@@ -64,18 +64,7 @@ movePixelDown(Pixel* pixel) {
     return false;
   }
 
-  pixel->y += BLOCK_WIDTH;
-
-  return true;
-}
-
-bool
-movePixelDownWithConstaint(Pixel* pixel, size_t length) {
-  if (pixel->y >= BOTTOM_PLAY_SCREEN - length) {
-    return false;
-  }
-
-  pixel->y += BLOCK_WIDTH;
+  pixel->y += BLOCK_WIDTH / 2;
 
   return true;
 }

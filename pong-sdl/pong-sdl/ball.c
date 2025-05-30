@@ -153,7 +153,7 @@ isCollidedWithPlayer(Ball* ball, Player* player) {
     return false;
   }
 
-  if (ballAtPlayerY >= playerPixelY && ballAtPlayerY < (playerPixelY + playerLengthY)) {
+  if (ballAtPlayerY >= (playerPixelY - BALL_HEIGHT / 2) && ballAtPlayerY < (playerPixelY + playerLengthY)) {
     return true;
   }
 
@@ -206,7 +206,8 @@ isCollidedWithPlayerChangeCourse(Ball* ball, Player* player, int32_t nextBallPix
 
   // Collision with Player
   int32_t diffY = ((int32_t)ballAtPlayerY - (int32_t)getPlayerLengthMidPointY(player)) / getBallHeight(ball);
-  int32_t newBallMovementIndex = abs(diffY);
+  int32_t playerMidLength = ((PLAYER_HEIGHT - BALL_HEIGHT) / BALL_HEIGHT) / 2;
+  int32_t newBallMovementIndex = (int32_t)(abs(diffY) / (float_t)playerMidLength * (float_t)(TOTAL_BALL_MOVEMENTS - 2));
   ball->ballMovement = ballMovements[newBallMovementIndex];
 
   if (diffY < 0) {

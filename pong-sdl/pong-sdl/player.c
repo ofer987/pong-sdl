@@ -15,6 +15,8 @@ struct _player {
   int32_t width;
 
   size_t score;
+
+  enum EPlayerMovement movement;
 };
 
 enum EPlayerSide
@@ -84,6 +86,16 @@ movePlayerUp(Player* player) {
   }
 
   return movePixelUp(player->top);
+}
+
+enum EPlayerMovement
+getPlayerMovement(Player* player) {
+  return player->movement;
+}
+
+void
+setPlayerMovement(Player* player, enum EPlayerMovement newMovement) {
+  player->movement = newMovement;
 }
 
 bool
