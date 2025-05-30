@@ -481,7 +481,7 @@ SDL_AppIterate(void* appstate) {
   // TODO: change to false
   bool isScreenRerendered = false;
   uint64_t newRerenderedMovementFrames = SDL_GetTicks();
-  if (newRerenderedMovementFrames >= rerenderedMovementFrames + FIFTEEN_MILLISECONDS) {
+  if (newRerenderedMovementFrames >= rerenderedMovementFrames + TEN_MILLISECONDS) {
     isScreenRerendered = true;
     rerenderedMovementFrames = newRerenderedMovementFrames;
   }
