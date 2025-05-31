@@ -21,8 +21,7 @@ struct _screen {
 
 enum EPlayerSide
 getLastPlayerToWin(Screen* screen) {
-  // TODO: find a more elegant design pattern!
-  if (screen->lastPlayerToWin == 0) {
+  if (screen->mode == GameInProgressNoWin || screen->lastPlayerToWin == 0) {
     printf("Incorrect value for (screen->lastPlayerToWin)\n");
 
     exit(EXIT_FAILURE);
@@ -64,13 +63,13 @@ void
 continueGame(Screen* screen) {
   switch (screen->mode) {
     case GameLost:
-      // TODO: find a more elegant design pattern
       if (screen->lastPlayerToWin == 0) {
-        return;
+        screen->mode = GameInProgressNoWin;
+      } else {
+        screen->mode = GameInProgress;
       }
 
       reinitBall(screen->ball, screen->lastPlayerToWin);
-      screen->mode = GameInProgress;
 
       return;
     default:
@@ -81,12 +80,18 @@ continueGame(Screen* screen) {
 void
 startGame(Screen* screen) {
   switch (screen->mode) {
+    case GameInProgressNoWin:
+      /* FALLTHROUGH */
     case GameInProgress:
       screen->mode = GamePaused;
 
       return;
     case GamePaused:
-      screen->mode = GameInProgress;
+      if (screen->lastPlayerToWin == 0) {
+        screen->mode = GameInProgressNoWin;
+      } else {
+        screen->mode = GameInProgress;
+      }
 
       return;
     case GameRestart:
@@ -94,7 +99,7 @@ startGame(Screen* screen) {
       reinitPlayerScore(screen->rightPlayer);
       /* FALLTHROUGH */
     case GameNotStated:
-      screen->mode = GameInProgress;
+      screen->mode = GameInProgressNoWin;
       kickBall(screen->ball);
 
       return;
@@ -119,13 +124,15 @@ restartGame(Screen* screen) {
 
   screen->lastPlayerToWin = 0;
 
-  screen->mode = GameInProgress;
+  screen->mode = GameInProgressNoWin;
   kickBall(screen->ball);
 }
 
 void
 setGameToLost(Screen* screen) {
   switch (screen->mode) {
+    case GameInProgressNoWin:
+      /* FALLTHROUGH */
     case GameInProgress:
       stopBall(screen->ball);
       screen->mode = GameLost;

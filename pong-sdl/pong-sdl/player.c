@@ -33,7 +33,6 @@ size_t
 getPlayerLengthMidPointY(Player* player) {
   size_t y = getPixelY(player->top);
 
-  // TODO: validate that 15 / 2 == 7
   return y + (player->height / 2) - 1;
 }
 
