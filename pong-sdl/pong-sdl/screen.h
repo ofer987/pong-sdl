@@ -4,7 +4,7 @@
 #include "./ball.h"
 #include "./player.h"
 
-enum EGameMode { GameNotStated, GameInProgress, GamePaused, GameLost, GameQuit, GameRestart };
+enum EGameMode { GameNotStated, GameInProgressNoWin, GameInProgress, GamePaused, GameLost, GameQuit, GameRestart };
 typedef enum EGameMode EGameMode;
 
 typedef struct _screen Screen;

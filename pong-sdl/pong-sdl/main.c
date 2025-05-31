@@ -101,7 +101,7 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
   }
 
   EGameMode mode = getGameMode(screen);
-  if (mode == GameInProgress) {
+  if (mode == GameInProgressNoWin || mode == GameInProgress) {
     SDL_Keycode key = event->key.key;
     Player* leftPlayer = getLeftPlayer(screen);
     Player* rightPlayer = getRightPlayer(screen);
@@ -333,6 +333,8 @@ renderGameMode(Screen* screen) {
 
       SDL_RenderDebugText(renderer, x, y + TEXT_AREA_HEIGHT * 5, "Press P to un(P)ause");
       break;
+    case GameInProgressNoWin:
+      /* FALLTHROUGH */
     case GameInProgress:
       SDL_RenderDebugText(renderer, x, y, "Playing");
 
@@ -359,8 +361,7 @@ SDL_AppIterate(void* appstate) {
 
   const float scale = pixelScale;
   SDL_SetRenderScale(renderer, scale, scale);
-  EGameMode gameMode = getGameMode(screen);
-  if (gameMode == GameInProgress) {
+  if (mode == GameInProgressNoWin || mode == GameInProgress) {
     Player* leftPlayer = getLeftPlayer(screen);
     Player* rightPlayer = getRightPlayer(screen);
 
@@ -381,7 +382,7 @@ SDL_AppIterate(void* appstate) {
     }
   }
 
-  bool isGameLost = (gameMode == GameLost) || isLost(screen);
+  bool isGameLost = (mode == GameLost) || isLost(screen);
   if (isGameLost) {
     setGameToLost(screen);
   }
@@ -403,7 +404,7 @@ SDL_AppIterate(void* appstate) {
 
   SDL_RenderPresent(renderer);
 
-  if (getGameMode(screen) == GameInProgress && isScreenRerendered) {
+  if ((mode == GameInProgressNoWin || mode == GameInProgress) && isScreenRerendered) {
     moveScreenBall(screen);
   }
 
