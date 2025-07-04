@@ -228,8 +228,8 @@ isCollidedWithPlayerChangeCourse(Ball* ball, Player* player, int32_t nextBallPix
 bool
 isCollidedWithPlayerY(size_t ballY, Player* player) {
   Pixel* playerPixel = getPlayerTopPixel(player);
-  size_t startY = getPixelY(playerPixel);
-  size_t endY = startY + getPlayerHeight(player);
+  int32_t startY = getPixelY(playerPixel);
+  int32_t endY = startY + getPlayerHeight(player);
 
   if (ballY < startY) {
     return false;
@@ -251,9 +251,9 @@ changeBallMovement(Ball* ball, Player* player, size_t x, size_t y) {
   /* static double_t pi = acos(-1); */
 
   // Get degrees
-  size_t playerLengthY = getPlayerHeight(player);
+  int32_t playerLengthY = getPlayerHeight(player);
   Pixel* playerTopPixel = getPlayerTopPixel(player);
-  size_t playerTopPixelY = getPixelY(playerTopPixel);
+  int32_t playerTopPixelY = getPixelY(playerTopPixel);
 
   size_t midPointY = playerTopPixelY + (playerLengthY / 2);
 
@@ -329,8 +329,8 @@ isCollidedWithBorder(Ball* ball, Border* border) {
 
 void
 isCollidedWithBorderChangeCourse(Ball* ball, Border* border, int32_t nextBallPixelX, int32_t nextBallPixelY) {
-  int32_t ballPixelX = (int32_t)getPixelX(ball->pixel);
-  int32_t ballPixelY = (int32_t)getPixelY(ball->pixel);
+  int32_t ballPixelX = getPixelX(ball->pixel);
+  int32_t ballPixelY = getPixelY(ball->pixel);
 
   int32_t newBallX = nextBallPixelX;
   int32_t newBallY = nextBallPixelY;
@@ -350,8 +350,8 @@ isCollidedWithBorderChangeCourse(Ball* ball, Border* border, int32_t nextBallPix
 
 void
 moveBall(Ball* ball, Player* leftPlayer, Player* rightPlayer, Border* topBorder, Border* bottomBorder) {
-  int32_t ballPixelX = (int32_t)getPixelX(ball->pixel);
-  int32_t ballPixelY = (int32_t)getPixelY(ball->pixel);
+  int32_t ballPixelX = getPixelX(ball->pixel);
+  int32_t ballPixelY = getPixelY(ball->pixel);
 
   int32_t nextBallPixelX = ballPixelX + ball->ballMovement.x;
   int32_t nextBallPixelY = ballPixelY + ball->ballMovement.y;
@@ -399,10 +399,10 @@ stopBall(Ball* ball) {
 
 enum EPlayerSide
 isBallOutOfBounds(Ball* ball, Player* leftPlayer, Player* rightPlayer) {
-  size_t ballX = getPixelX(ball->pixel);
+  int32_t ballX = getPixelX(ball->pixel);
 
   Pixel* leftPlayerPixel = getPlayerTopPixel(leftPlayer);
-  size_t leftPlayerX = getPixelX(leftPlayerPixel);
+  int32_t leftPlayerX = getPixelX(leftPlayerPixel);
 
   if (ballX <= LEFT_BORDER) {
     incrementPlayerScore(rightPlayer);
@@ -411,7 +411,7 @@ isBallOutOfBounds(Ball* ball, Player* leftPlayer, Player* rightPlayer) {
   }
 
   Pixel* rightPlayerPixel = getPlayerTopPixel(rightPlayer);
-  size_t rightPlayerX = getPixelX(rightPlayerPixel);
+  int32_t rightPlayerX = getPixelX(rightPlayerPixel);
   if (ballX >= RIGHT_BORDER) {
     incrementPlayerScore(leftPlayer);
 

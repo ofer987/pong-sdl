@@ -19,7 +19,7 @@ void incrementPlayerScore(Player*);
 size_t getPlayerScore(Player*);
 enum EPlayerSide getPlayerSide(Player*);
 Pixel* getPlayerTopPixel(Player*);
-size_t getPlayerLengthMidPointY(Player*);
+int32_t getPlayerLengthMidPointY(Player*);
 int32_t getPlayerWidth(Player*);
 int32_t getPlayerHeight(Player*);
 bool movePlayerUp(Player*);

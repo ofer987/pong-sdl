@@ -273,8 +273,8 @@ renderBall(Ball* ball) {
 void
 renderPlayer(Player* player) {
   Pixel* pixel = getPlayerTopPixel(player);
-  size_t x = getPixelX(pixel);
-  size_t y = getPixelY(pixel);
+  int32_t x = getPixelX(pixel);
+  int32_t y = getPixelY(pixel);
 
   SDL_FRect playerFrect;
 

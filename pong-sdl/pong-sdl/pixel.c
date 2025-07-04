@@ -1,32 +1,33 @@
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 #include "./pixel.h"
 
 struct _pixel {
   // TODO: change to uint32_t
-  size_t x;
-  size_t y;
+  int32_t x;
+  int32_t y;
 
   enum EBlockTypes type;
 };
 
 void
-setPixelX(Pixel* pixel, size_t x) {
+setPixelX(Pixel* pixel, int32_t x) {
   pixel->x = x;
 }
 
 void
-setPixelY(Pixel* pixel, size_t y) {
+setPixelY(Pixel* pixel, int32_t y) {
   pixel->y = y;
 }
 
-size_t
+int32_t
 getPixelX(Pixel* pixel) {
   return pixel->x;
 }
 
-size_t
+int32_t
 getPixelY(Pixel* pixel) {
   return pixel->y;
 }
