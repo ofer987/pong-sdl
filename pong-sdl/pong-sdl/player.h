@@ -8,7 +8,7 @@
 
 enum EPlayerMovement { NO_MOVEMENT, DOWN_MOVEMENT, UP_MOVEMENT };
 
-enum EPlayerSide { LEFT_SIDE = 1, RIGHT_SIDE };
+enum EPlayerSide { NO_WINNING_SIDE = 0, LEFT_SIDE, RIGHT_SIDE };
 
 typedef struct _player Player;
 

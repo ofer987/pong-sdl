@@ -15,19 +15,29 @@ struct _screen {
   Player* rightPlayer;
   Ball* ball;
 
-  enum EPlayerSide lastPlayerToWin;
+  enum EPlayerSide winnerOfPreviousRound;
   enum EGameMode mode;
 };
 
 enum EPlayerSide
-getLastPlayerToWin(Screen* screen) {
-  if (screen->mode == GameInProgressNoWin || screen->lastPlayerToWin == 0) {
-    printf("Incorrect value for (screen->lastPlayerToWin)\n");
+getWinner(Screen* screen) {
+  size_t leftPlayerScore = getPlayerScore(screen->leftPlayer);
+  size_t rightPlayerScore = getPlayerScore(screen->rightPlayer);
 
-    exit(EXIT_FAILURE);
+  if (leftPlayerScore == rightPlayerScore) {
+    return NO_WINNING_SIDE;
   }
 
-  return screen->lastPlayerToWin;
+  if (leftPlayerScore > rightPlayerScore) {
+    return LEFT_SIDE;
+  }
+
+  return RIGHT_SIDE;
+}
+
+enum EPlayerSide
+getWinnerOfPreviousRound(Screen* screen) {
+  return screen->winnerOfPreviousRound;
 }
 
 void
@@ -63,13 +73,15 @@ void
 continueGame(Screen* screen) {
   switch (screen->mode) {
     case GameLost:
-      if (screen->lastPlayerToWin == 0) {
-        screen->mode = GameInProgressNoWin;
-      } else {
-        screen->mode = GameInProgress;
+      screen->mode = GameInProgress;
+
+      enum EPlayerSide startingSide = screen->winnerOfPreviousRound;
+      if (startingSide == 0) {
+        // Default side
+        startingSide = LEFT_SIDE;
       }
 
-      reinitBall(screen->ball, screen->lastPlayerToWin);
+      reinitBall(screen->ball, startingSide);
 
       return;
     default:
@@ -80,18 +92,12 @@ continueGame(Screen* screen) {
 void
 startGame(Screen* screen) {
   switch (screen->mode) {
-    case GameInProgressNoWin:
-      /* FALLTHROUGH */
     case GameInProgress:
       screen->mode = GamePaused;
 
       return;
     case GamePaused:
-      if (screen->lastPlayerToWin == 0) {
-        screen->mode = GameInProgressNoWin;
-      } else {
-        screen->mode = GameInProgress;
-      }
+      screen->mode = GameInProgress;
 
       return;
     case GameRestart:
@@ -99,7 +105,7 @@ startGame(Screen* screen) {
       reinitPlayerScore(screen->rightPlayer);
       /* FALLTHROUGH */
     case GameNotStated:
-      screen->mode = GameInProgressNoWin;
+      screen->mode = GameInProgress;
       kickBall(screen->ball);
 
       return;
@@ -122,17 +128,15 @@ restartGame(Screen* screen) {
   screen->rightPlayer = NULL;
   screen->rightPlayer = initPlayer(RIGHT_SIDE, PLAYER_WIDTH, PLAYER_HEIGHT);
 
-  screen->lastPlayerToWin = 0;
+  screen->winnerOfPreviousRound = NO_WINNING_SIDE;
 
-  screen->mode = GameInProgressNoWin;
+  screen->mode = GameInProgress;
   kickBall(screen->ball);
 }
 
 void
 setGameToLost(Screen* screen) {
   switch (screen->mode) {
-    case GameInProgressNoWin:
-      /* FALLTHROUGH */
     case GameInProgress:
       stopBall(screen->ball);
       screen->mode = GameLost;
@@ -149,11 +153,11 @@ isLost(Screen* screen) {
 
   switch (winningSide) {
     case LEFT_SIDE:
-      screen->lastPlayerToWin = LEFT_SIDE;
+      screen->winnerOfPreviousRound = LEFT_SIDE;
 
       return true;
     case RIGHT_SIDE:
-      screen->lastPlayerToWin = RIGHT_SIDE;
+      screen->winnerOfPreviousRound = RIGHT_SIDE;
 
       return true;
     default:

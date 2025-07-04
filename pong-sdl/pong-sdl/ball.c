@@ -418,7 +418,7 @@ isBallOutOfBounds(Ball* ball, Player* leftPlayer, Player* rightPlayer) {
     return LEFT_SIDE;
   }
 
-  return 0;
+  return NO_WINNING_SIDE;
 }
 
 Pixel*
