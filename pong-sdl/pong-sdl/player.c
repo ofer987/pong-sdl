@@ -29,9 +29,9 @@ getPlayerTopPixel(Player* player) {
   return player->top;
 }
 
-size_t
+int32_t
 getPlayerLengthMidPointY(Player* player) {
-  size_t y = getPixelY(player->top);
+  int32_t y = getPixelY(player->top);
 
   return y + (player->height / 2) - 1;
 }
@@ -79,7 +79,7 @@ destroyPlayer(Player* player) {
 
 bool
 movePlayerUp(Player* player) {
-  size_t topY = getPixelY(player->top);
+  int32_t topY = getPixelY(player->top);
   if (topY <= (TOP_BORDER + PLAYER_BLOCK_HEIGHT)) {
     return false;
   }
@@ -99,7 +99,7 @@ setPlayerMovement(Player* player, enum EPlayerMovement newMovement) {
 
 bool
 movePlayerDown(Player* player) {
-  size_t topY = getPixelY(player->top);
+  int32_t topY = getPixelY(player->top);
   if ((topY + player->height) >= BOTTOM_BORDER) {
     return false;
   }

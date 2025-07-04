@@ -4,12 +4,14 @@
 #include "./ball.h"
 #include "./player.h"
 
-enum EGameMode { GameNotStated, GameInProgressNoWin, GameInProgress, GamePaused, GameLost, GameQuit, GameRestart };
+enum EGameMode { GameNotStated, GameInProgress, GamePaused, GameLost, GameQuit, GameRestart };
 typedef enum EGameMode EGameMode;
 
 typedef struct _screen Screen;
 
-enum EPlayerSide getLastPlayerToWin(Screen*);
+enum EPlayerSide getWinner(Screen*);
+enum EPlayerSide getWinnerOfPreviousRound(Screen*);
+
 void continueGame(Screen*);
 bool isLost(Screen*);
 void moveScreenBall(Screen*);

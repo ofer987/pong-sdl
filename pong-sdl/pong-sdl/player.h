@@ -8,7 +8,7 @@
 
 enum EPlayerMovement { NO_MOVEMENT, DOWN_MOVEMENT, UP_MOVEMENT };
 
-enum EPlayerSide { LEFT_SIDE = 1, RIGHT_SIDE };
+enum EPlayerSide { NO_WINNING_SIDE = 0, LEFT_SIDE, RIGHT_SIDE };
 
 typedef struct _player Player;
 
@@ -19,7 +19,7 @@ void incrementPlayerScore(Player*);
 size_t getPlayerScore(Player*);
 enum EPlayerSide getPlayerSide(Player*);
 Pixel* getPlayerTopPixel(Player*);
-size_t getPlayerLengthMidPointY(Player*);
+int32_t getPlayerLengthMidPointY(Player*);
 int32_t getPlayerWidth(Player*);
 int32_t getPlayerHeight(Player*);
 bool movePlayerUp(Player*);
